@@ -42,4 +42,28 @@ const std::string Canvas::SerializeToString() const {
   return serialzation;
 }
 
+void Canvas::AddLinePoint(double x, double y, double z) {
+  Point3D point;
+  point.set_x(x);
+  point.set_y(y);
+  point.set_z(z);
+  AddLinePoint(point);
+}
+
+void Canvas::AddLinePoint(const Point3D& p) {
+  auto* point = polyline_.add_point();
+  point->CopyFrom(p);
+}
+
+double Canvas::LineLength() {
+  double line_length = 0.0;
+  int line_size = polyline_.point_size();
+  for (int i=1; i < line_size; i++) {
+    const auto& p1 = polyline_.point(i-1);
+    const auto& p2 = polyline_.point(i);
+    line_length += sqrt(pow(p1.x() - p2.x(),2) + pow(p1.y() - p2.y(), 2) + pow(p1.z() - p2.z(), 2));
+  }
+  return line_length;
+}
+
 }  // namespace homework1
