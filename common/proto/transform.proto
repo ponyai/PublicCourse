@@ -1,0 +1,66 @@
+syntax = "proto2";
+
+package interface.geometry;
+
+// 3D rigid body position representation
+
+message Vector3d {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+message Vector3f {
+  optional float x = 1;
+  optional float y = 2;
+  optional float z = 3;
+}
+
+message Quaterniond {
+  optional double x = 1 [default = 0.0];
+  optional double y = 2 [default = 0.0];
+  optional double z = 3 [default = 0.0];
+  optional double w = 4 [default = 1.0];
+}
+
+message Quaternionf {
+  optional float x = 1 [default = 0.0];
+  optional float y = 2 [default = 0.0];
+  optional float z = 3 [default = 0.0];
+  optional float w = 4 [default = 1.0];
+}
+
+// Tait–Bryan angles
+// Roll – rotation about the X-axis
+// Pitch – rotation about the Y-axis
+// Yaw – rotation about the Z-axis
+message EulerAnglesd {
+  optional double roll = 1;
+  optional double pitch = 2;
+  optional double yaw = 3;
+}
+
+message EulerAnglesf {
+  optional float roll = 1;
+  optional float pitch = 2;
+  optional float yaw = 3;
+}
+
+// The linear and angular position of a 3D rigid body
+message Rigid3d {
+  optional Vector3d translation = 1;
+
+  optional Quaterniond rotation = 2;
+
+  optional EulerAnglesd rotation_euler = 3;
+
+}
+
+// The linear and angular position of a 3D rigid body
+message Rigid3f {
+  optional Vector3f translation = 1;
+
+  optional Quaternionf rotation = 2;
+
+  optional EulerAnglesf rotation_euler = 3;
+}

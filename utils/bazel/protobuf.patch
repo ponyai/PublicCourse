@@ -1,0 +1,253 @@
+diff --git a/BUILD b/BUILD
+index cacd237..4e27c62 100644
+--- a/BUILD
++++ b/BUILD
+@@ -24,6 +24,14 @@ COPTS = select({
+         "-Woverloaded-virtual",
+         "-Wno-sign-compare",
+         "-Wno-unused-function",
++        # PONY_CHANGE BEGIN
++        # NOTE(yiming@): added to mute some default warnings defined in our CROSSTOOL file.
++        "-Wno-unused-const-variable",
++        "-Wno-unused-parameter",
++        "-Wno-enum-compare",
++        "-Wno-tautological-compare",
++        "-Wno-invalid-offsetof",
++        # PONY_CHANGE END
+     ],
+ })
+ 
+@@ -222,6 +230,7 @@ objc_library(
+     includes = ["objectivec"],
+     non_arc_srcs = ["objectivec/GPBProtocolBuffers.m"],
+     visibility = ["//visibility:public"],
++    tags = ["manual"],
+ )
+ 
+ RELATIVE_WELL_KNOWN_PROTOS = [
+@@ -265,6 +274,9 @@ cc_proto_library(
+ cc_binary(
+     name = "js_embed",
+     srcs = ["src/google/protobuf/compiler/js/embed.cc"],
++    # PONY_CHANGE BEGIN
++    copts = COPTS,
++    # PONY_CHANGE END
+     visibility = ["//visibility:public"],
+ )
+ 
+@@ -465,11 +477,13 @@ cc_proto_library(
+     default_runtime = ":protobuf",
+     protoc = ":protoc",
+     deps = [":cc_wkt_protos"],
++    copts = ["-Wno-unused-parameter"],
+ )
+ 
+ COMMON_TEST_SRCS = [
+     # AUTOGEN(common_test_srcs)
+     "src/google/protobuf/arena_test_util.cc",
++    "src/google/protobuf/compiler/mock_code_generator.cc",
+     "src/google/protobuf/map_test_util.cc",
+     "src/google/protobuf/test_util.cc",
+     "src/google/protobuf/testing/file.cc",
+@@ -487,8 +501,9 @@ cc_binary(
+     deps = [
+         ":protobuf",
+         ":protoc_lib",
+-        "//external:gtest",
++        "@googletest//:gtest",
+     ],
++    copts = ["-Wno-unused-parameter"],
+ )
+ 
+ cc_test(
+@@ -496,7 +511,7 @@ cc_test(
+     srcs = ["src/google/protobuf/stubs/io_win32_unittest.cc"],
+     deps = [
+         ":protobuf_lite",
+-        "//external:gtest_main",
++        "@googletest//:gtest_main",
+     ],
+     tags = ["manual", "windows"],
+ )
+@@ -519,7 +534,6 @@ cc_test(
+         "src/google/protobuf/compiler/importer_unittest.cc",
+         "src/google/protobuf/compiler/java/java_doc_comment_unittest.cc",
+         "src/google/protobuf/compiler/java/java_plugin_unittest.cc",
+-        "src/google/protobuf/compiler/mock_code_generator.cc",
+         "src/google/protobuf/compiler/objectivec/objectivec_helpers_unittest.cc",
+         "src/google/protobuf/compiler/parser_unittest.cc",
+         "src/google/protobuf/compiler/python/python_plugin_unittest.cc",
+@@ -577,7 +591,11 @@ cc_test(
+         "src/google/protobuf/well_known_types_unittest.cc",
+         "src/google/protobuf/wire_format_unittest.cc",
+     ],
+-    copts = COPTS,
++    copts = COPTS + [
++        "-DGOOGLE_PROTOBUF_TEST_PLUGIN_PATH=\\\"external/com_google_protobuf/test_plugin\\\"",
++        "-Wno-ignored-qualifiers",
++        "-Wno-unused-private-field",
++    ],
+     data = [
+         ":test_plugin",
+     ] + glob([
+@@ -595,10 +613,11 @@ cc_test(
+         ":cc_test_protos",
+         ":protobuf",
+         ":protoc_lib",
+-        "//external:gtest_main",
++        "@googletest//:gtest_main",
+     ],
+ )
+ 
++
+ ################################################################################
+ # Java support
+ ################################################################################
+@@ -615,6 +634,7 @@ java_library(
+     ],
+     javacopts = ["-source 6", "-target 6"],
+     visibility = ["//visibility:public"],
++    tags = ["manual"],
+ )
+ 
+ java_library(
+@@ -629,6 +649,7 @@ java_library(
+         "//external:gson",
+         "//external:guava",
+     ],
++    tags = ["manual"],
+ )
+ 
+ ################################################################################
+@@ -662,8 +683,8 @@ cc_binary(
+     linkshared = 1,
+     linkstatic = 1,
+     deps = select({
+-        "//conditions:default": [],
+-        ":use_fast_cpp_protos": ["//external:python_headers"],
++        "//conditions:default": ["@python3//:lib"],
++        ":use_fast_cpp_protos": ["@python3//:lib"],
+     }),
+ )
+ 
+@@ -675,6 +696,8 @@ cc_binary(
+     ]),
+     copts = COPTS + [
+         "-DGOOGLE_PROTOBUF_HAS_ONEOF=1",
++        "-Wno-missing-field-initializers",
++        "-Wno-writable-strings",
+     ] + select({
+         "//conditions:default": [],
+         ":allow_oversize_protos": ["-DPROTOBUF_PYTHON_ALLOW_OVERSIZE_PROTOS=1"],
+@@ -688,8 +711,8 @@ cc_binary(
+     deps = [
+         ":protobuf",
+     ] + select({
+-        "//conditions:default": [],
+-        ":use_fast_cpp_protos": ["//external:python_headers"],
++        "//conditions:default": ["@python3//:lib"],
++        ":use_fast_cpp_protos": ["@python3//:lib"],
+     }),
+ )
+ 
+@@ -738,7 +761,7 @@ py_proto_library(
+     protoc = ":protoc",
+     py_libs = [
+         ":python_srcs",
+-        "//external:six",
++        "@six_py//:six",
+     ],
+     srcs_version = "PY2AND3",
+     visibility = ["//visibility:public"],
+@@ -840,6 +863,7 @@ proto_lang_toolchain(
+     command_line = "--java_out=$(OUT)",
+     runtime = ":protobuf_java",
+     visibility = ["//visibility:public"],
++    tags = ["manual"],
+ )
+ 
+ OBJC_HDRS = [
+@@ -921,4 +945,5 @@ objc_library(
+     ],
+     non_arc_srcs = OBJC_SRCS,
+     visibility = ["//visibility:public"],
++    tags = ["manual"],
+ )
+diff --git a/protobuf.bzl b/protobuf.bzl
+index 23380ba..ac93ddd 100644
+--- a/protobuf.bzl
++++ b/protobuf.bzl
+@@ -70,6 +70,8 @@ def _proto_gen_impl(ctx):
+   deps += ctx.files.srcs
+   source_dir = _SourceDir(ctx)
+   gen_dir = _GenDir(ctx)
++  if not ctx.files.srcs[0].is_source:
++    source_dir = gen_dir
+   if source_dir:
+     import_flags = ["-I" + source_dir, "-I" + gen_dir]
+   else:
+@@ -225,7 +227,7 @@ def cc_proto_library(
+ 
+   grpc_cpp_plugin = None
+   if use_grpc_plugin:
+-    grpc_cpp_plugin = "//external:grpc_cpp_plugin"
++    grpc_cpp_plugin = "@grpc//:grpc_cpp_plugin"
+ 
+   gen_srcs = _CcSrcs(srcs, use_grpc_plugin)
+   gen_hdrs = _CcHdrs(srcs, use_grpc_plugin)
+@@ -247,7 +249,7 @@ def cc_proto_library(
+   if default_runtime and not default_runtime in cc_libs:
+     cc_libs = cc_libs + [default_runtime]
+   if use_grpc_plugin:
+-    cc_libs = cc_libs + ["//external:grpc_lib"]
++    cc_libs = cc_libs + ["@grpc//:grpc_lib"]
+ 
+   native.cc_library(
+       name=name,
+@@ -263,8 +265,8 @@ def internal_gen_well_known_protos_java(srcs):
+   Args:
+     srcs: the well known protos
+   """
+-  root = Label("%s//protobuf_java" % (REPOSITORY_NAME)).workspace_root
+-  pkg = PACKAGE_NAME + "/" if PACKAGE_NAME else ""
++  root = Label("%s//protobuf_java" % (native.repository_name())).workspace_root
++  pkg = native.package_name() + "/" if native.package_name() else ""
+   if root == "":
+     include = " -I%ssrc " % pkg
+   else:
+@@ -352,7 +354,7 @@ def py_proto_library(
+ 
+   grpc_python_plugin = None
+   if use_grpc_plugin:
+-    grpc_python_plugin = "//external:grpc_python_plugin"
++    grpc_python_plugin = "@grpc//:grpc_python_plugin"
+     # Note: Generated grpc code depends on Python grpc module. This dependency
+     # is not explicitly listed in py_libs. Instead, host system is assumed to
+     # have grpc installed.
+diff --git a/python/google/protobuf/internal/test_util.py b/python/google/protobuf/internal/test_util.py
+index 269d0e2..7d8bde5 100755
+--- a/python/google/protobuf/internal/test_util.py
++++ b/python/google/protobuf/internal/test_util.py
+@@ -598,6 +598,8 @@ def GoldenFile(filename):
+ 
+   # Search up the directory tree looking for the C++ protobuf source code.
+   path = '.'
++  if os.path.exists('external/com_google_protobuf'):
++      path = 'external/com_google_protobuf'
+   while os.path.exists(path):
+     if os.path.exists(os.path.join(path, 'src/google/protobuf')):
+       # Found it.  Load the golden file from the testdata directory.
+diff --git a/src/google/protobuf/testing/googletest.cc b/src/google/protobuf/testing/googletest.cc
+index 33a75ed..1a41ab8 100644
+--- a/src/google/protobuf/testing/googletest.cc
++++ b/src/google/protobuf/testing/googletest.cc
+@@ -85,6 +85,9 @@ string TestSourceDir() {
+ 
+   // Look for the "src" directory.
+   string prefix = ".";
++  if (File::Exists("external/com_google_protobuf")) {
++    prefix = "external/com_google_protobuf";
++  }
+ 
+   while (!File::Exists(prefix + "/src/google/protobuf")) {
+     if (!File::Exists(prefix)) {

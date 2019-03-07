@@ -1,0 +1,43 @@
+syntax = "proto2";
+
+package interface.simulation;
+
+message AgentConfig {
+    // Agent type name, same as the name you registered in pnc/agents/agents.cc
+    optional string type = 1;
+    // Agent instace name, could be any name
+    optional string name = 2;
+}
+
+message TaskConfig {
+    optional int32 num_trips = 1 [default = 10];
+}
+
+message RuleConfig {
+    message OneIterationTimeoutRule {
+        optional double hard_iteration_timeout = 1 [default = 0.2];
+        optional double soft_iteration_timeout = 2 [default = 0.02];
+        optional int32 allowed_num_iterations_soft_timeout = 3 [default = 50];
+    }
+
+    message VehicleExceedSpeedLimitRule {
+        // The hard speed limit. A vehicle will be eliminated immediatelly when its speed reaches this limit.
+        optional double hard_speed_limit_kmh = 2 [default = 55];
+    }
+
+    optional bool check_run_red_traffic_light = 1 [default = false];
+    optional bool check_vehicle_out_of_lane = 3 [default = false];
+    optional bool check_one_iteration_timeout = 4 [default = false];
+    optional bool check_vehicles_collision = 6 [default = false];
+    optional OneIterationTimeoutRule one_iteration_timeout_rule = 8;
+    optional VehicleExceedSpeedLimitRule vehicle_exceed_speed_limit_rule = 10;
+
+}
+
+message SimulationConfig {
+    repeated AgentConfig agent_config = 1;
+    optional TaskConfig task_config = 2;
+    optional RuleConfig rule_config = 3;
+    optional bool add_keyboard_controlled_agent = 4 [default = false];
+    optional bool add_mocked_pedestrians = 5 [default = true];
+}

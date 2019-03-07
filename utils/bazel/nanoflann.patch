@@ -1,0 +1,65 @@
+diff -u -r a/examples/KDTreeVectorOfVectorsAdaptor.h b/examples/KDTreeVectorOfVectorsAdaptor.h
+--- a/examples/KDTreeVectorOfVectorsAdaptor.h	2016-12-20 13:46:51.000000000 -0800
++++ b/examples/KDTreeVectorOfVectorsAdaptor.h	2018-01-24 14:40:31.573875178 -0800
+@@ -37,6 +37,7 @@
+ //typedef std::vector<Eigen::VectorXd> my_vector_of_vectors_t;   // This requires #include <Eigen/Dense>
+ // =====================================================================================
+ 
++namespace nanoflann {
+ 
+ /** A simple vector-of-vectors adaptor for nanoflann, without duplicating the storage.
+   *  The i'th vector represents a point in the state space.
+@@ -127,4 +128,4 @@
+ 
+ }; // end of KDTreeVectorOfVectorsAdaptor
+ 
+-
++}  // namespace nanoflann
+diff -u -r a/include/nanoflann.hpp b/include/nanoflann.hpp
+--- a/include/nanoflann.hpp	2016-12-20 13:46:51.000000000 -0800
++++ b/include/nanoflann.hpp	2018-01-24 14:56:18.329337790 -0800
+@@ -1286,7 +1286,7 @@
+ 
+ 
+ 	/** An L2-metric KD-tree adaptor for working with data directly stored in an Eigen Matrix, without duplicating the data storage.
+-	  *  Each row in the matrix represents a point in the state space.
++	  *  Each column in the matrix represents a point in the state space.
+ 	  *
+ 	  *  Example of usage:
+ 	  * \code
+@@ -1317,7 +1317,7 @@
+ 		/// Constructor: takes a const ref to the matrix object with the data points
+ 		KDTreeEigenMatrixAdaptor(const int dimensionality, const MatrixType &mat, const int leaf_max_size = 10) : m_data_matrix(mat)
+ 		{
+-			const IndexType dims = mat.cols();
++			const IndexType dims = mat.rows();
+ 			if (dims!=dimensionality) throw std::runtime_error("Error: 'dimensionality' must match column count in data matrix");
+ 			if (DIM>0 && static_cast<int>(dims)!=DIM)
+ 				throw std::runtime_error("Data set dimensionality does not match the 'DIM' template argument");
+@@ -1359,7 +1359,7 @@
+ 
+ 		// Must return the number of data points
+ 		inline size_t kdtree_get_point_count() const {
+-			return m_data_matrix.rows();
++			return m_data_matrix.cols();
+ 		}
+ 
+ 		// Returns the L2 distance between the vector "p1[0:size-1]" and the data point with index "idx_p2" stored in the class:
+@@ -1367,7 +1367,7 @@
+ 		{
+ 			num_t s=0;
+ 			for (IndexType i=0; i<size; i++) {
+-				const num_t d= p1[i]-m_data_matrix.coeff(idx_p2,i);
++				const num_t d= p1[i]-m_data_matrix.coeff(i, idx_p2);
+ 				s+=d*d;
+ 			}
+ 			return s;
+@@ -1375,7 +1375,7 @@
+ 
+ 		// Returns the dim'th component of the idx'th point in the class:
+ 		inline num_t kdtree_get_pt(const IndexType idx, int dim) const {
+-			return m_data_matrix.coeff(idx,IndexType(dim));
++			return m_data_matrix.coeff(IndexType(dim), idx);
+ 		}
+ 
+ 		// Optional bounding-box computation: return false to default to a standard bbox computation loop.

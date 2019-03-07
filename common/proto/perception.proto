@@ -1,0 +1,69 @@
+syntax = "proto2";
+
+package interface.perception;
+
+import "common/proto/geometry.proto";
+import "common/proto/map_traffic_light.proto";
+import "common/proto/map_id.proto";
+
+enum ObjectType {
+  NO_LABEL_ZONE = -1;
+  NOISE_ZONE = -2;
+  AMBIGUOUS_IN_NOISE_ZONE = -3;
+  UNKNOWN_TYPE = 0;
+  CAR = 1;
+  PEDESTRIAN = 2;
+  CYCLIST = 3;
+
+  // Fine category for unknown objects.
+  UNKNOWN_TRAFFIC_CONE = 100;
+  UNKNOWN_ROAD_CONSTRUCTION_BOARD = 101;
+  UNKNOWN_TRAFFIC_SIGN = 103;
+
+  // Fine category for cars.
+  CAR_LARGE = 201;
+};
+
+
+message PerceptionObstacle {
+  // obstacle ID.
+  optional string id = 1;
+
+  // heading in the world coordinate system.
+  optional double heading = 3;
+
+  // The speed of the obstacle.
+  optional double speed = 99;
+
+  // Height of the obstacle, in meters.
+  optional double height = 7;
+
+  // Points for bottom polygon.
+  repeated interface.geometry.Point3D polygon_point = 5;
+
+  // Object type.
+  optional ObjectType type = 8;
+
+  // Pointcloud's points which belong to this object.
+  repeated interface.geometry.Point3D object_points = 100;
+}
+
+message PerceptionObstacles {
+  // List of obstacles.
+  repeated PerceptionObstacle obstacle = 2;
+
+  // Processed Velodyne data time.
+  optional double timestamp = 3;
+}
+
+
+message SingleTrafficLightStatus {
+  // Traffic light ID
+  optional interface.map.Id id = 1;
+  // Traffic light color
+  optional interface.map.Bulb.Color color = 2;
+}
+
+message PerceptionTrafficLightStatus {
+  repeated SingleTrafficLightStatus single_traffic_light_status = 1;
+}

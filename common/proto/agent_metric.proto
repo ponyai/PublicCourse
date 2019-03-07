@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+package interface.agent;
+
+message AgentMetric {
+
+  optional string name = 1;
+
+  optional int32 num_finished_trips = 2 [default = 0];
+
+  optional double big_acc_sqr_sum_total = 3;
+  optional double big_acc_sqr_sum_per_trip = 4 ;
+
+  optional double curvature_sqr_sum_total = 5;
+  optional double curvature_sqr_sum_per_trip = 6;
+
+  optional double time_cost_total = 7;
+  optional double time_cost_per_trip = 8;
+
+}
+

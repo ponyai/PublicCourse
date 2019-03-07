@@ -1,0 +1,40 @@
+syntax = "proto2";
+
+package interface.geometry;
+
+// One general 2D point.
+message Point2D {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+// One general 3D point.
+message Point3D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+// One general point in the geographic coordinate system.
+message PointLLH {
+  optional double latitude = 1 [default = nan]; // in degrees, from -90 to 90.
+  optional double longitude = 2 [default = nan]; // in degrees, from -180 to 180.
+  optional double height = 3 [default = 0.0]; // in meters, ellipsoid height (WGS-84).
+}
+
+// One general polyline.
+message Polyline {
+  repeated Point3D point = 1;
+}
+
+// One general polygon, the last point in the polygon always connects to the first point
+message Polygon {
+  repeated Point3D point = 1;
+}
+
+// The general 2D vector
+message Vector2d {
+  optional double x = 1;
+  optional double y = 2;
+}
+

@@ -1,0 +1,42 @@
+syntax = "proto2";
+
+package interface.comms;
+
+import "common/proto/control.proto";
+import "common/proto/agent_status.proto";
+import "common/proto/display.proto";
+
+message AgentInitializeRequest {
+    optional string name = 2;
+    optional interface.agent.AgentStatus agent_status = 1;
+}
+
+message AgentInitializeResponse {
+    optional double time_cost = 1;
+}
+
+message AgentIterationRequest {
+    optional string name = 2;
+    optional interface.agent.AgentStatus agent_status = 1;
+}
+
+message AgentIterationResponse {
+    optional double time_cost = 1;
+    optional interface.control.ControlCommand control_command = 2;
+    optional interface.display.VariableView debug_variables = 3;
+}
+
+message Request {
+    oneof request {
+        AgentInitializeRequest initialize_request = 1;
+        AgentIterationRequest iteration_request = 2;
+    }
+}
+
+message Response {
+    oneof response {
+        AgentInitializeResponse initialize_response = 1;
+        AgentIterationResponse iteration_response = 2;
+    }
+}
+

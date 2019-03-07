@@ -1,0 +1,51 @@
+startup --host_jvm_args=-Dbazel.DigestFunction=SHA1
+# set jvm heap size and gc options
+startup --host_jvm_args=-Xmx4G
+startup --host_jvm_args=-XX:+PrintGCDetails
+
+common --color=yes
+
+# Use in-memory fs as sandbox
+build --experimental_sandbox_base=/dev/shm
+
+build --cxxopt='-std=c++14'
+
+build --action_env=PATH="/bin:/usr/bin"
+build --crosstool_top=//common/toolchain:default
+build --jobs 8 --ram_utilization_factor 50
+
+build --experimental_strict_action_env
+build --action_env=PATH="/bin:/usr/bin"
+build --test_env=PATH="/bin:/usr/bin"
+build --test_env=HOME="/tmp"
+build --test_env=LANG="C.UTF-8"
+build --test_env=LC_ALL="C.UTF-8"
+build --define enable_cuda=true
+build --crosstool_top=//common/toolchain:default
+build --python_top=@python3
+build --python_version=PY3
+build --custom_malloc=//common/toolchain:malloc
+build --jobs 8
+build --ram_utilization_factor 50
+
+# This line doesn't tell our compiler to optimize towards AMD K8. Instead, 'k8' is just an internal
+# name for AMD64/EM64T CPUs. This word is for looking up a proper configuration in
+# //common/toolchain/BUILD.
+build --cpu=k8
+
+test --jobs 8
+test --test_output=errors
+
+# Address Sanitizer
+build:asan --strip=never
+build:asan --features asan
+# cuInit() is trying to mmap a large chunk of address space which intersects with the mapping
+# that asan makes to protect its "shadow gap".
+# For more details, see: https://github.com/google/sanitizers/issues/629
+test:asan --test_env="ASAN_OPTIONS=protect_shadow_gap=0"
+test:asan --test_env="ASAN_SYMBOLIZER_PATH=/usr/lib/llvm-6.0/bin/llvm-symbolizer"
+test:asan --test_tag_filters=-noasan
+# Some of the python libraries depend on shared libraries installed by 'apt', which is not built
+# in ASAN mode. In this situation, Python unit tests in ASAN mode will fail to load these libraries.
+# Also, ASAN is more of a C++ feature. For this reason, we disable ASAN for python tests.
+test:asan --test_lang_filters=-py

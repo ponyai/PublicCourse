@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+
+package interface.control;
+
+
+// Control Command
+message ControlCommand {
+    // Target angle of steering wheel. In rad, left is positive, right is negative.
+    // There is an upper bound for steering angle's absolute value.
+    // The angle larger than upper bound will result in the same effect of upper limit.
+    optional double steering_angle = 1;
+    // Maximum angular rate of steering wheel, in rad/s, always non-negative.
+    // Zero means as fast as possible, but there is an upper bound for actual steering rate.
+    // It means even if zero is set to this value, the target angle may not be immediatelly
+    // reached after the control command is sent.
+    optional double steering_rate = 2;
+    // Acceleration/throttle pedal position ratio. Double from 0.0 to 1.0 inclusive.
+    optional double throttle_ratio = 3;
+    // Brake pedal position ratio. Double from 0.0 to 1.0 inclusive.
+    optional double brake_ratio = 4;
+}
+

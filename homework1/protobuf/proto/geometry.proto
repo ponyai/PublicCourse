@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+package homework1.geometry;
+
+// One general 2D point.
+message Point2D {
+  optional double x = 1;
+  optional double y = 2;
+}
+
+// One general 3D point.
+message Point3D {
+  optional double x = 1;
+  optional double y = 2;
+  optional double z = 3;
+}
+
+// One general polyline.
+message Polyline {
+  repeated Point3D point = 1;
+}
+
+// One general polygon, the last point in the polygon always connects to the first point
+message Polygon {
+  repeated Point3D point = 1;
+}

@@ -1,0 +1,19 @@
+syntax = "proto2";
+
+package interface.status;
+
+enum ErrorCode {
+  OK = 0;
+  CANCELLED = 1;
+  INVALID_ARGUMENT = 2;
+  DEADLINE_EXCEEDED = 3;
+  UNKNOWN = 4;
+  RESOURCE_UNAVAILABLE = 5;
+  SYSTEM_BROKEN = 6;
+  INTERNAL_ERROR = 7;
+}
+
+message StatusProto {
+  optional ErrorCode code = 1;
+  optional string error_message = 2;
+}

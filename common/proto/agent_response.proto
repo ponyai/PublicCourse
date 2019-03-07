@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package interface.agent;
+
+import "common/proto/control.proto";
+import "common/proto/display.proto";
+
+message AgentResponse {
+    optional interface.control.ControlCommand control_command = 1;
+    optional interface.display.VariableView debug_variables = 3;
+    optional double iteration_time_cost = 2;
+}

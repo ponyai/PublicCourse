@@ -1,0 +1,10 @@
+directories:
+  .
+
+targets:
+  //homework1/helloworld:main
+  //homework1/protobuf:canvas_test
+  //homework1/unittest:car_test
+  //homework2:main
+  //homework3/chessboard:opencv_example
+  //homework3/rotation:rotation_test

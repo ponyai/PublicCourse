@@ -1,0 +1,12 @@
+*.obj  3D model files
+*.mtl  Material files
+
+Each 3D model and its material can be viewed via MeshLab:
+
+$ meshlab passat.obj
+
+In MeshLab, choose Render -> Color -> Per Face.
+
+MeshLab can be installed via apt-get:
+
+$ apt-get install meshlab

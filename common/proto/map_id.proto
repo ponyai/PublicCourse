@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package interface.map;
+
+// Unique ids for all map objects.
+message Id {
+    optional string id = 1;
+}

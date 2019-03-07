@@ -1,0 +1,31 @@
+syntax = "proto2";
+
+package interface.map;
+
+import "common/proto/geometry.proto";
+import "common/proto/map_id.proto";
+
+message Bulb {
+  enum Shape {
+    CIRCLE = 0;
+    ARROW_LEFT = 1;
+    ARROW_RIGHT = 2;
+  };
+  enum Color {
+    RED = 0;
+    YELLOW = 1;
+    GREEN = 2;
+  }
+  optional Shape shape = 4;
+  optional Color color = 5;
+  // Location of the center of the bulb
+  optional interface.geometry.Point3D location = 3;
+}
+
+// A group of bulbs, e.g. the collection of a red bulb, a yellow bulb, and a green bulb.
+// Next Id: 9.
+message TrafficLight {
+  optional Id id = 1;
+  repeated Bulb bulb = 2;
+  optional interface.geometry.Polyline stop_line = 5;
+}

@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+package interface.map;
+
+import "common/proto/geometry.proto";
+import "common/proto/map_id.proto";
+
+message LaneBoundary {
+    optional interface.geometry.Polyline boundary = 1;
+    enum Type {
+        UNKNOWN = 0;
+        DOUBLE_YELLOW = 1;
+        DOTTED_YELLOW = 2;
+        SOLID_YELLOW = 3;
+        DOTTED_WHITE = 4;
+        SOLID_WHITE = 5;
+        CURB = 6;
+    };
+    optional Type type = 2;
+}
+
+message Lane {
+    // Unique id of the lane.
+    optional Id id = 1;
+
+    // Central line of the lane. The direction of the lane is the same as the order of the points in the central line.
+    optional interface.geometry.Polyline central_line = 2;
+
+    // Boundary of the lane.
+    optional LaneBoundary left_bound = 3;
+    optional LaneBoundary right_bound = 4;
+
+    // Predecessor and successor of the lane.
+    repeated Id predecessor = 5;
+    repeated Id successor = 6;
+
+    // Speed limit of the lane (m/s)
+    optional double speed_limit = 14;
+}

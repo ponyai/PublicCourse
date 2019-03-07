@@ -1,0 +1,10 @@
+vehicle_length: 4.8
+vehicle_ra_to_front: 3.8
+vehicle_ra_to_rear: 1.0
+vehicle_fa_to_front: 1.0
+vehicle_fa_to_rear: 3.8
+vehicle_ra_to_ground: 0.24
+vehicle_width: 2.10
+vehicle_height: 1.5
+empty_vehicle_mass: 1700.0
+wheelbase: 2.8

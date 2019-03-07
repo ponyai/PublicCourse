@@ -1,0 +1,36 @@
+syntax = "proto2";
+
+package interface.vehicle;
+
+// Next Id: 11.
+message VehicleParams {
+  // Vehicle length.
+  optional double vehicle_length = 1;
+
+  // Distance from vehicle rear axle to front.
+  optional double vehicle_ra_to_front = 2;
+
+  // Distance from vehicle rear axle to rear.
+  optional double vehicle_ra_to_rear = 3;
+
+  // Distance from vehicle front axle to front.
+  optional double vehicle_fa_to_front = 4;
+
+  // Distance from vehicle front axle to rear.
+  optional double vehicle_fa_to_rear = 5;
+
+  // Distance from vehicle rear axle to ground.
+  optional double vehicle_ra_to_ground = 6;
+
+  // Vehicle width.
+  optional double vehicle_width = 7;
+
+  // Vehicle height.
+  optional double vehicle_height = 8;
+
+  // Empty vehicle mass in kg. It doens't include the weight of passengers, gas or sensors.
+  optional double empty_vehicle_mass = 9;
+
+  // The distance between the front and rear axles of a vehicle. In meters.
+  optional double wheelbase = 10;
+}

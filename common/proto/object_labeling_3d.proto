@@ -1,0 +1,38 @@
+syntax = "proto2";
+
+package interface.object_labeling;
+
+import "common/proto/geometry.proto";
+import "common/proto/perception.proto";
+
+message ObjectLabel {
+  optional string id = 1;
+
+  // Object type.
+  optional interface.perception.ObjectType type = 2;
+
+  // Heading is defined in world frame (ENU)
+  // The heading is angle between object's heading direction and X axis (East)
+  optional double heading = 3;
+
+  // Object center in the world frame.
+  optional double center_x = 4;
+  optional double center_y = 5;
+  optional double center_z = 6;
+
+  // Object length/width/height
+  optional double length = 7;
+  optional double width = 8;
+  optional double height = 9;
+
+  optional interface.geometry.Polygon polygon = 11;
+  optional double speed = 12 [default = 0.0];
+}
+
+message ObjectLabels {
+  optional string log_file_id = 1;
+
+  repeated ObjectLabel object = 5;
+
+  optional double timestamp = 6;
+}

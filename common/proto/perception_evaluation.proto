@@ -1,0 +1,69 @@
+syntax = "proto2";
+
+package interface.perception;
+
+import "common/proto/geometry.proto";
+import "common/proto/perception.proto";
+
+message EffectivePolygonInfo {
+  optional string id = 1;
+  optional double floor = 2;
+  optional double ceiling = 3;
+  optional string type = 4;
+  repeated interface.geometry.Point2D point = 5;
+}
+
+message TypeCount {
+  optional ObjectType type = 1;
+  optional int32 count = 2;
+}
+
+message PerceptionFrameResult {
+  // Log file ID.
+  optional string log_file_id = 1;
+
+  // Log file full path.
+  optional string log_file_path = 2;
+
+  // Label file full path.
+  optional string label_file_path = 3;
+
+  repeated EffectivePolygonInfo labeled_polygon = 4;
+  repeated EffectivePolygonInfo detected_polygon = 5;
+
+  optional double precision = 6;
+  optional double recall = 7;
+
+  // image file full path
+  optional string image_file_path = 8;
+  
+  repeated interface.geometry.Vector2d labeled_velocity = 9;
+  repeated interface.geometry.Vector2d detected_velocity = 10;
+  optional double total_velocity_diff = 11;
+  
+  repeated TypeCount true_positive = 12;
+  repeated TypeCount label_count = 13;
+  repeated TypeCount detect_count = 14;
+}
+
+message PerceptionEvaluationResult {
+  // Log directory.
+  optional string log_directory = 1;
+
+  // Perception result for each frame.
+  repeated PerceptionFrameResult frame_result = 2;
+
+  optional double evaluation_range = 3;
+}
+
+
+message PerceptionEvaluationConfig {
+  optional string scenario_name = 1;
+
+  message DataLabelPath {
+    optional string lidar_dir = 1;
+    optional string label_dir = 2;
+    optional string camera_dir = 3;
+  }
+  optional DataLabelPath local_data = 3;
+}

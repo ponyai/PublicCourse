@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package interface.display;
+
+import "common/proto/display.proto";
+
+message AgentDebugData {
+  repeated interface.display.Variable variable = 1;
+}

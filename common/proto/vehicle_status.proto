@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+import "common/proto/geometry.proto";
+import "common/proto/transform.proto";
+
+package interface.agent;
+
+message VehicleStatus {
+    // The origin of Vehicle Coordinate System in World Coordinate System, in meters.
+    optional interface.geometry.Vector3d position = 3;
+    // The orientation of Vehicle Coordinate System in World Coordinate System.
+    optional interface.geometry.Quaterniond orientation = 4;
+    // The linear velocity of the origin of Vehicle Coordinate System,
+    // in World Coordinate System, in m/s.
+    optional interface.geometry.Vector3d velocity = 5;
+    // The negative angular velocity of World Coordinate System
+    // in Vehicle Coordinate System, in rad/s. It doesn't include earth's rotation.
+    optional interface.geometry.Vector3d angular_velocity_vcs = 6;
+    // The negative acceleration of the origin of World Coordinate System,
+    // in Vehicle Coordinate System, in m/s^2. It doesn't include gravitational acceleration.
+    optional interface.geometry.Vector3d acceleration_vcs = 7;
+}

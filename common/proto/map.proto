@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+import "common/proto/map_lane.proto";
+import "common/proto/map_traffic_light.proto";
+
+package interface.map;
+
+message Map {
+    repeated Lane lane = 2;
+    repeated TrafficLight traffic_light = 3;
+}
+
+// map image information.
+message MapImageConfig {
+    optional double min_x = 1;
+    optional double min_y = 2;
+    optional double max_x = 3;
+    optional double max_y = 4;
+    optional string image_name = 5;
+}

@@ -1,0 +1,45 @@
+syntax = "proto2";
+
+package interface.agent;
+
+import "common/proto/geometry.proto";
+import "common/proto/perception.proto";
+import "common/proto/vehicle_status.proto";
+
+message SimulationStatus {
+    // Whether the vehicle agent is alive
+    optional bool is_alive = 1 [default = false];
+    // Whether the vehicle agent finishes its trip
+    optional bool is_finished = 2 [default = false];
+    // Reason of the agent elimination. This field will be filled when is_alive==false && is_finished==false
+    optional string elimination_reason = 5;
+    // Number of finished trips
+    optional int32 num_finished_trips = 3 [default = 0];
+    // Current simulation time in seconds
+    optional double simulation_time = 4;
+}
+
+message PerceptionStatus {
+    // Obstacles including vehicles and pedestrians, only obstacles in 100m are be contained
+    repeated interface.perception.PerceptionObstacle obstacle = 1;
+    // All traffic light status
+    repeated interface.perception.PerceptionTrafficLightStatus traffic_light = 2;
+}
+
+message RouteStatus {
+    // Destination of the current trip route
+    optional interface.geometry.Point3D destination = 5;
+    // True if the trip is new
+    optional bool is_new_request = 2 [default = false];
+}
+
+message AgentStatus {
+    // Vehicle's status, including position, velocity, acceleration...
+    optional VehicleStatus vehicle_status = 1;
+    // Route status
+    optional RouteStatus route_status = 2;
+    // Perception status, only obstacles in 100m are be contained
+    optional PerceptionStatus perception_status = 3;
+    // Simulation status
+    optional SimulationStatus simulation_status = 4;
+}

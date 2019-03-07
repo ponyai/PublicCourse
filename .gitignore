@@ -1,0 +1,6 @@
+bazel-*
+.idea/
+.vscode/
+cmake-build-debug
+CMakeLists.txt
+.clang-format

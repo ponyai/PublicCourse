@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package interface.simulation;
+
+import "common/proto/agent_status.proto";
+import "common/proto/agent_metric.proto";
+import "common/proto/perception.proto";
+import "common/proto/display.proto";
+
+message SimulationSystemData {
+    repeated VehicleAgentData vehicle_agent = 1;
+    optional interface.perception.PerceptionTrafficLightStatus traffic_light_status = 2;
+    repeated interface.perception.PerceptionObstacle pedestrian = 4;
+    optional double simulation_time = 3;
+}
+
+message VehicleAgentData {
+    optional string name = 1;
+    optional interface.agent.AgentStatus agent_status = 2;
+    optional interface.display.VariableView debug_variables = 3;
+}
+
+message SimulationMetrics {
+    repeated interface.agent.AgentMetric agent_metric = 1;
+}
