@@ -37,9 +37,9 @@ void Canvas::ParseFromString(const std::string& serialzation) {
 }
 
 const std::string Canvas::SerializeToString() const {
-  std::string serialzation;
-  CHECK(polygon_.SerializeToString(&serialzation)) << "Canvas serialization failed.";
-  return serialzation;
+  std::string serialization;
+  CHECK(polygon_.SerializeToString(&serialization)) << "Canvas serialization failed.";
+  return serialization;
 }
 
 }  // namespace homework1
