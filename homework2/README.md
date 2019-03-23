@@ -43,7 +43,7 @@ it by yourself so that you can understand the algorithm more thoroughly.
 
 We have provided you guys the basic template and your task is to follow the comments in **icp.cc** and implement
 those two important functions: **FindCorrespondence** and **EstimatePose**. We also provide a viewer tool
-for you to better visualize the iterative process. (`bazel run -c opt //homework2:icp_viewer_main`). 
+for you to better visualize the iterative process. (`bazel run -c opt //homework2/icp:icp_viewer_main`). 
 If your implementation is correct, you should be able to see the source pointcloud aligned with the target one after a few iterations (Press **N** for next iteration). 
 
 **What to submit:** Your C++ code for those two functions mentioned above.
