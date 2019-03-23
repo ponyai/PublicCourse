@@ -5,3 +5,9 @@ targets:
   //homework1/helloworld:main
   //homework1/protobuf:canvas_test
   //homework1/unittest:car_test
+  //homework2/icp:icp_viewer_main
+  //homework2:pointcloud_reader_main
+  //homework2/rotation:rotation
+  //homework2/rotation:rotation_test
+  //homework2/chessboard:opencv_example
+  //homework3:single_frame_detector_main
