@@ -4,16 +4,16 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "qt_core",
-    srcs = ["lib/x86_64-linux-gnu/libQt5Core.so"],
-    hdrs = glob(["include/x86_64-linux-gnu/qt5/QtCore/**"]),
-    includes = ["include/x86_64-linux-gnu/qt5"],
+    srcs = ["lib/libQt5Core.so"],
+    hdrs = glob(["include/qt/QtCore/**"]),
+    includes = ["include/qt"],
 )
 
 cc_library(
     name = "qt_gui",
-    srcs = ["lib/x86_64-linux-gnu/libQt5Gui.so"],
-    hdrs = glob(["include/x86_64-linux-gnu/qt5/QtGui/**"]),
-    includes = ["include/x86_64-linux-gnu/qt5"],
+    srcs = ["lib/libQt5Gui.so"],
+    hdrs = glob(["include/qt/QtGui/**"]),
+    includes = ["include/qt"],
     deps = [
         ":qt_core",
     ],
@@ -21,9 +21,9 @@ cc_library(
 
 cc_library(
     name = "qt_widgets",
-    srcs = ["lib/x86_64-linux-gnu/libQt5Widgets.so"],
-    hdrs = glob(["include/x86_64-linux-gnu/qt5/QtWidgets/**"]),
-    includes = ["include/x86_64-linux-gnu/qt5"],
+    srcs = ["lib/libQt5Widgets.so"],
+    hdrs = glob(["include/qt/QtWidgets/**"]),
+    includes = ["include/qt"],
     deps = [
         ":qt_core",
         ":qt_gui",
@@ -32,9 +32,9 @@ cc_library(
 
 cc_library(
     name = "qt_opengl",
-    srcs = ["lib/x86_64-linux-gnu/libQt5OpenGL.so"],
-    hdrs = glob(["include/x86_64-linux-gnu/qt5/QtOpenGL/**"]),
-    includes = ["include/x86_64-linux-gnu/qt5"],
+    srcs = ["lib/libQt5OpenGL.so"],
+    hdrs = glob(["include/qt/QtOpenGL/**"]),
+    includes = ["include/qt"],
     deps = [
         ":qt_gui",
         ":qt_widgets",

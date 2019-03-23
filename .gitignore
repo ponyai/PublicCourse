@@ -1,4 +1,5 @@
 bazel-*
+.clwb
 .idea/
 .vscode/
 cmake-build-debug

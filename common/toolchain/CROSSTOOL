@@ -29,16 +29,15 @@ toolchain {
 
   tool_path { name: "ar" path: "/usr/bin/ar" }
   tool_path { name: "compat-ld" path: "/usr/bin/ld" }
-  tool_path { name: "cpp" path: "/usr/bin/clang-3.8" }
+  tool_path { name: "cpp" path: "/usr/bin/clang" }
   tool_path { name: "dwp" path: "/usr/bin/dwp" }
-  tool_path { name: "gcc" path: "/usr/bin/clang-3.8" }
+  tool_path { name: "gcc" path: "/usr/bin/clang" }
   cxx_flag: "-std=c++14"
   linker_flag: "-lstdc++"
   linker_flag: "-lm"
   linker_flag: "-B/usr/bin/"
 
-  cxx_builtin_include_directory: "/usr/lib/llvm-3.8/lib/clang/3.8.0/include"
-  cxx_builtin_include_directory: "/usr/lib/clang/3.8.0/include"
+  cxx_builtin_include_directory: "/usr/lib/clang/7.0.1/include"
   cxx_builtin_include_directory: "/usr/include"
   tool_path { name: "gcov" path: "/usr/bin/gcov" }
 
