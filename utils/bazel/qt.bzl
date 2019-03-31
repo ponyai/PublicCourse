@@ -15,7 +15,7 @@ def cc_qt_library(name, srcs = [], hdrs = [], resources = [], **kwargs):
           name = ui_name,
           srcs = [hdr],
           outs = ["%s.h" % ui_name],
-          cmd = "/usr/lib/x86_64-linux-gnu/qt5/bin/uic $(location %s) -o $@" % hdr,
+          cmd = "/usr/bin/uic-qt5 $(location %s) -o $@" % hdr,
       )
       addition_hdrs.append(":%s" % ui_name)
     elif extension(hdr) == "qrc":
@@ -27,7 +27,7 @@ def cc_qt_library(name, srcs = [], hdrs = [], resources = [], **kwargs):
           # NOTE(team): "*.qrc" must be in the same directory with resource root.
           # If you want to use resource only in *.ui files, please make alwayslink=1,
           # otherwise, the resource will not be linked.
-          cmd = "/usr/lib/x86_64-linux-gnu/qt5/bin/rcc $(location %s) -o $@" % hdr
+          cmd = "/usr/bin/rcc-qt5 $(location %s) -o $@" % hdr
       )
       addition_srcs.append(":%s" % qrc_name)
     else:
@@ -38,7 +38,7 @@ def cc_qt_library(name, srcs = [], hdrs = [], resources = [], **kwargs):
           outs = ["%s.cc" % moc_name],
           # NOTE(yiming): On some machines (e.g., mine), /usr/bin/moc is actually moc of qt4.
           # Therefore, provide the absolute path here to make sure Qt5 moc is used.
-          cmd = "/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(location %s) -o $@ -f'%s' -nw"  \
+          cmd = "/usr/bin/moc-qt5 $(location %s) -o $@ -f'%s' -nw"  \
                   % (hdr, '%s/%s' % (PACKAGE_NAME, hdr)),
       )
       addition_srcs.append(":%s" % moc_name)

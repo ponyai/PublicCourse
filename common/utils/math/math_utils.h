@@ -6,6 +6,8 @@
 #include <cmath>
 #include <functional>
 #include <vector>
+#include <numeric>
+#include <random>
 
 #include "glog/logging.h"
 #include "common/utils/math/vec2d.h"
