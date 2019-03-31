@@ -14,8 +14,8 @@ int main(int argc, char* argv[]) {
   google::InitGoogleLogging(argv[0]);
 
   // ATTENTION!!! : please use absolute path for reading the data file.
-  const PointCloud src_pointcloud = ReadPointCloudFromTextFile("/homework2/data/src.txt");
-  const PointCloud target_pointcloud = ReadPointCloudFromTextFile("/homework2/data/target.txt");
+  const PointCloud src_pointcloud = ReadPointCloudFromTextFile("/home/ocean/PublicCourse/homework2/data/src.txt");
+  const PointCloud target_pointcloud = ReadPointCloudFromTextFile("/home/ocean/PublicCourse/homework2/data/target.txt");
 
   QApplication app(argc, argv);
   IcpViewer::Options options;

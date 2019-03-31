@@ -11,4 +11,4 @@ Eigen::Vector3d ToRollPitchYaw(Eigen::Matrix3d rotation) {
 Eigen::AngleAxisd ToAngleAxis(Eigen::Matrix3d rotation) {
   return Eigen::AngleAxisd(0.1, Eigen::Vector3d::UnitX());
 }
-}  // namespace homework3
+}  // namespace homework2
