@@ -1,0 +1,19 @@
+diff --git a/src/google/protobuf/compiler/cpp/cpp_file.cc b/src/google/protobuf/compiler/cpp/cpp_file.cc
+index 875beec..0e4b896 100644
+--- a/src/google/protobuf/compiler/cpp/cpp_file.cc
++++ b/src/google/protobuf/compiler/cpp/cpp_file.cc
+@@ -151,13 +151,6 @@ FileGenerator::~FileGenerator() = default;
+ 
+ void FileGenerator::GenerateMacroUndefs(io::Printer* printer) {
+   Formatter format(printer, variables_);
+-  // Only do this for protobuf's own types. There are some google3 protos using
+-  // macros as field names and the generated code compiles after the macro
+-  // expansion. Undefing these macros actually breaks such code.
+-  if (file_->name() != "net/proto2/compiler/proto/plugin.proto" &&
+-      file_->name() != "google/protobuf/compiler/plugin.proto") {
+-    return;
+-  }
+   std::vector<std::string> names_to_undef;
+   std::vector<const FieldDescriptor*> fields;
+   ListAllFields(file_, &fields);
+

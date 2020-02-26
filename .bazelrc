@@ -22,7 +22,6 @@ build --test_env=LANG="C.UTF-8"
 build --test_env=LC_ALL="C.UTF-8"
 build --define enable_cuda=true
 build --crosstool_top=//common/toolchain:default
-build --python_top=@python3
 build --python_version=PY3
 build --custom_malloc=//common/toolchain:malloc
 build --jobs 8

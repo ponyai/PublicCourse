@@ -1,0 +1,257 @@
+diff --git a/BUILD b/BUILD
+index 1124321..bb1587e 100644
+--- a/BUILD
++++ b/BUILD
+@@ -86,6 +86,10 @@ COPTS = select({
+         # Prevents ISO C++ const string assignment warnings for pyext sources.
+         "-Wno-write-strings",
+         "-Wno-deprecated-declarations",
++        # PONY_CHANGE BEGIN
++        # NOTE(yinjie@): added to mute some default warnings defined in our CROSSTOOL file.
++        "-Wno-unused-parameter", "-Wno-missing-field-initializers", "-Wno-invalid-offsetof",
++        # PONY_CHANGE END
+     ],
+ })
+ 
+@@ -759,8 +763,9 @@ py_library(
+     srcs_version = "PY2AND3",
+ )
+ 
++# TODO(chaoren): remove _api_implementation.cpython-35m-x86_64-linux-gnu.so after tensorflow supports python3.8
+ cc_binary(
+-    name = "python/google/protobuf/internal/_api_implementation.so",
++    name = "python/google/protobuf/internal/_api_implementation.cpython-35m-x86_64-linux-gnu.so",
+     srcs = ["python/google/protobuf/internal/api_implementation.cc"],
+     copts = COPTS + [
+         "-DPYTHON_PROTO2_CPP_IMPL_V2",
+@@ -774,14 +779,27 @@ cc_binary(
+     ],
+     linkshared = 1,
+     linkstatic = 1,
+-    deps = select({
+-        "//conditions:default": [],
+-        ":use_fast_cpp_protos": ["//external:python_headers"],
+-    }),
++    deps = [
++        "@python3//:lib",
++    ],
+ )
+ 
+ cc_binary(
+-    name = "python/google/protobuf/pyext/_message.so",
++    name = "python/google/protobuf/internal/_api_implementation.cpython-38-x86_64-linux-gnu.so",
++    srcs = ["python/google/protobuf/internal/api_implementation.cc"],
++    copts = COPTS + [
++        "-DPYTHON_PROTO2_CPP_IMPL_V2",
++    ],
++    linkshared = 1,
++    linkstatic = 1,
++    deps = [
++        "@python3_8//:lib",
++    ],
++)
++
++# TODO(chaoren): remove _message.cpython-35m-x86_64-linux-gnu.so after tensorflow supports python3.8
++cc_binary(
++    name = "python/google/protobuf/pyext/_message.cpython-35m-x86_64-linux-gnu.so",
+     srcs = glob([
+         "python/google/protobuf/pyext/*.cc",
+         "python/google/protobuf/pyext/*.h",
+@@ -807,18 +825,34 @@ cc_binary(
+     linkstatic = 1,
+     deps = [
+         ":protobuf",
+-        ":proto_api",
++        ":proto_api_python3",
++        "@python3//:lib",
++    ],
++)
++
++cc_binary(
++    name = "python/google/protobuf/pyext/_message.cpython-38-x86_64-linux-gnu.so",
++    srcs = glob([
++        "python/google/protobuf/pyext/*.cc",
++        "python/google/protobuf/pyext/*.h",
++    ]),
++    copts = COPTS + [
++        "-DGOOGLE_PROTOBUF_HAS_ONEOF=1",
+     ] + select({
+         "//conditions:default": [],
+-        ":use_fast_cpp_protos": ["//external:python_headers"],
++        ":allow_oversize_protos": ["-DPROTOBUF_PYTHON_ALLOW_OVERSIZE_PROTOS=1"],
+     }),
+-)
+-
+-config_setting(
+-    name = "use_fast_cpp_protos",
+-    values = {
+-        "define": "use_fast_cpp_protos=true",
+-    },
++    includes = [
++        "python/",
++        "src/",
++    ],
++    linkshared = 1,
++    linkstatic = 1,
++    deps = [
++        ":protobuf",
++        ":proto_api_python3_8",
++        "@python3_8//:lib",
++    ],
+     visibility = [
+         # Public, but Protobuf only visibility.
+         "//:__subpackages__",
+@@ -857,10 +891,13 @@ py_proto_library(
+     srcs = COPIED_WELL_KNOWN_PROTOS,
+     include = "python",
+     data = select({
+-        "//conditions:default": [],
+-        ":use_fast_cpp_protos": [
+-            ":python/google/protobuf/internal/_api_implementation.so",
+-            ":python/google/protobuf/pyext/_message.so",
++        "@ponyai//common/toolchain:use_py35": [
++            ":python/google/protobuf/internal/_api_implementation.cpython-35m-x86_64-linux-gnu.so",
++            ":python/google/protobuf/pyext/_message.cpython-35m-x86_64-linux-gnu.so",
++        ],
++        "//conditions:default": [
++            ":python/google/protobuf/internal/_api_implementation.cpython-38-x86_64-linux-gnu.so",
++            ":python/google/protobuf/pyext/_message.cpython-38-x86_64-linux-gnu.so",
+         ],
+     }),
+     default_runtime = "",
+@@ -957,12 +994,22 @@ internal_protobuf_py_tests(
+     deps = [":python_tests"],
+ )
+ 
++# TODO(chaoren): remove proto_api_python3 after tensorflow supports python3.8
++cc_library(
++    name = "proto_api_python3",
++    hdrs = ["python/google/protobuf/proto_api.h"],
++    deps = [
++        "@python3//:lib",
++    ],
++    visibility = ["//visibility:public"],
++)
++
+ cc_library(
+-    name = "proto_api",
++    name = "proto_api_python3_8",
+     hdrs = ["python/google/protobuf/proto_api.h"],
+     visibility = ["//visibility:public"],
+     deps = [
+-        "//external:python_headers",
++        "@python3_8//:lib",
+     ],
+ )
+ 
+diff --git a/protobuf.bzl b/protobuf.bzl
+index 12d3edb..7091dea 100644
+--- a/protobuf.bzl
++++ b/protobuf.bzl
+@@ -37,16 +37,22 @@ def _SourceDir(ctx):
+         return _GetPath(ctx, ctx.attr.includes[0])
+     return _GetPath(ctx, ctx.label.package + "/" + ctx.attr.includes[0])
+ 
++def _CcGrpcHdrs(srcs):
++    return [s[:-len(".proto")] + ".grpc.pb.h" for s in srcs]
++
+ def _CcHdrs(srcs, use_grpc_plugin = False):
+     ret = [s[:-len(".proto")] + ".pb.h" for s in srcs]
+     if use_grpc_plugin:
+-        ret += [s[:-len(".proto")] + ".grpc.pb.h" for s in srcs]
++        ret += _CcGrpcHdrs(srcs)
+     return ret
+ 
++def _CcGrpcSrcs(srcs):
++    return [s[:-len(".proto")] + ".grpc.pb.cc" for s in srcs]
++
+ def _CcSrcs(srcs, use_grpc_plugin = False):
+     ret = [s[:-len(".proto")] + ".pb.cc" for s in srcs]
+     if use_grpc_plugin:
+-        ret += [s[:-len(".proto")] + ".grpc.pb.cc" for s in srcs]
++        ret += _CcGrpcSrcs(srcs)
+     return ret
+ 
+ def _CcOuts(srcs, use_grpc_plugin = False):
+@@ -117,8 +123,16 @@ def _proto_gen_impl(ctx):
+         use_grpc_plugin = (ctx.attr.plugin_language == "grpc" and ctx.attr.plugin)
+         path_tpl = "$(realpath %s)" if in_gen_dir else "%s"
+         if ctx.attr.gen_cc:
+-            args += [("--cpp_out=" + path_tpl) % gen_dir]
+-            outs.extend(_CcOuts([src.basename], use_grpc_plugin = use_grpc_plugin))
++            # PONY_CHANGE BEGIN
++            # NOTE(yinjie@): don't need cc_out twice when there is plugin.
++            if not ctx.executable.plugin:
++                args += [("--cc_out=" + path_tpl) % gen_dir]
++            # PONY_CHANGE END
++            if use_grpc_plugin:
++                outs.extend(_CcGrpcSrcs([src.basename]) + _CcGrpcHdrs([src.basename]))
++            else:
++                outs.extend(_CcOuts([src.basename], False))
++
+         if ctx.attr.gen_py:
+             args += [("--python_out=" + path_tpl) % gen_dir]
+             outs.extend(_PyOuts([src.basename], use_grpc_plugin = use_grpc_plugin))
+@@ -288,10 +302,6 @@ def cc_proto_library(
+     if include != None:
+         includes = [include]
+ 
+-    grpc_cpp_plugin = None
+-    if use_grpc_plugin:
+-        grpc_cpp_plugin = "//external:grpc_cpp_plugin"
+-
+     gen_srcs = _CcSrcs(srcs, use_grpc_plugin)
+     gen_hdrs = _CcHdrs(srcs, use_grpc_plugin)
+     outs = gen_srcs + gen_hdrs
+@@ -302,12 +312,25 @@ def cc_proto_library(
+         deps = [s + "_genproto" for s in deps],
+         includes = includes,
+         protoc = protoc,
+-        plugin = grpc_cpp_plugin,
+-        plugin_language = "grpc",
++        plugin = "@//common/tools/protobuf:pony_cpp_generator_main",
++        plugin_language = "cc",
+         gen_cc = 1,
+-        outs = outs,
++        outs = _CcSrcs(srcs, False) + _CcHdrs(srcs, False),
+         visibility = ["//visibility:public"],
+     )
++    if use_grpc_plugin:
++        proto_gen(
++            name = name + "_rpc_genproto",
++            srcs = srcs,
++            deps = [s + "_genproto" for s in deps],
++            includes = includes,
++            protoc = protoc,
++            plugin = "//external:grpc_cpp_plugin",
++            plugin_language = "grpc",
++            gen_cc = 1,
++            outs = _CcGrpcSrcs(srcs) + _CcGrpcHdrs(srcs),
++            visibility = ["//visibility:public"],
++        )
+ 
+     if default_runtime and not default_runtime in cc_libs:
+         cc_libs = cc_libs + [default_runtime]
+diff --git a/src/google/protobuf/compiler/cpp/cpp_message.cc b/src/google/protobuf/compiler/cpp/cpp_message.cc
+index aaa00b0..0e14f1b 100644
+--- a/src/google/protobuf/compiler/cpp/cpp_message.cc
++++ b/src/google/protobuf/compiler/cpp/cpp_message.cc
+@@ -1057,6 +1057,8 @@ void MessageGenerator::GenerateClassDefinition(io::Printer* printer) {
+             "#else\n"
+             "    (void) s;\n"
+             "#endif\n"
++            "    // NOTE(yinjie): suppress -no-unused-parameters\n"
++            "    (void)s;\n"
+             "    return true;\n"
+             " }\n",
+             descriptor_->field(0)->full_name());
+@@ -1086,6 +1088,8 @@ void MessageGenerator::GenerateClassDefinition(io::Printer* printer) {
+             "#else\n"
+             "    (void) s;\n"
+             "#endif\n"
++            "    // NOTE(yinjie): suppress -no-unused-parameters\n"
++            "    (void)s;\n"
+             "    return true;\n"
+             " }\n",
+             descriptor_->field(1)->full_name());
+

@@ -14,6 +14,9 @@
 
 """Utilities for defining Pony Bazel dependencies."""
 
+def warn(msg):
+    print("{red}{msg}{nc}".format(red = "\033[0;31m", msg = msg, nc = "\033[0m"))
+
 def _is_windows(ctx):
     return ctx.os.name.lower().find("windows") != -1
 
@@ -74,7 +77,7 @@ def _create_symbolic_links(ctx, path_mappings):
     for src_path, dest_path in path_mappings.items():
         _check_path_inside_archive(src_path, "ln -s")
         _check_path_inside_archive(dest_path, "ln -s")
-        dest_path_parts = dest_path.rstrip("/").rsplit("/", maxsplit = 1)
+        dest_path_parts = dest_path.rstrip("/").rsplit("/", 1)
         if len(dest_path_parts) > 1 and len(dest_path_parts[0]) > 0:
             _execute_and_check_ret_code(
                 ctx,
@@ -85,22 +88,39 @@ def _create_symbolic_links(ctx, path_mappings):
             ["ln", "--symbolic", ctx.path(src_path), ctx.path(dest_path)],
         )
 
+def _download_and_extract(ctx):
+    for url in ctx.attr.urls:
+        ret = ctx.download_and_extract(
+            url,
+            "",
+            ctx.attr.sha256,
+            ctx.attr.type,
+            ctx.attr.strip_prefix,
+            allow_fail = True,
+        )
+        if ret.success:
+            return ret
+        else:
+            warn("failed to download package from {}".format(url))
+
+    fail("all the URLs in pony_http_archive(urls) are not valid")
+
 def _pony_http_archive(ctx):
-    ctx.download_and_extract(
-        ctx.attr.urls,
-        "",
-        ctx.attr.sha256,
-        ctx.attr.type,
-        ctx.attr.strip_prefix,
-    )
+    _download_and_extract(ctx)
     if ctx.attr.fix_read_permission:
         ctx.execute(["/bin/chmod", "-R", "a+r", ctx.path(".").dirname])
     if ctx.attr.delete:
         _apply_delete(ctx, ctx.attr.delete)
     if ctx.attr.symbolic_links:
         _create_symbolic_links(ctx, ctx.attr.symbolic_links)
+
+    if ctx.attr.patch_file != "" and len(ctx.attr.patch_files) > 0:
+        fail("do not use both patch_file and patch_files")
     if ctx.attr.patch_file != "":
         _apply_patch(ctx, _to_label(ctx.attr.patch_file))
+    for patch_file in ctx.attr.patch_files:
+        _apply_patch(ctx, _to_label(patch_file))
+
     if ctx.attr.build_file != "":
         ctx.symlink(_to_label(ctx.attr.build_file), "BUILD.bazel")
 
@@ -120,6 +140,9 @@ pony_http_archive = repository_rule(
         # https://files.pythonhosted.org/packages/80/91/91911be01869fa877135946f928ed0004e62044bdd876c1e0f12e1b5fb90/psycopg2-binary-2.8.3.tar.gz
         "symbolic_links": attr.string_dict(),
         "patch_file": attr.string(),
+        # can use multiple patch files using patch_files
+        # patches is applied in order
+        "patch_files": attr.string_list(),
         "build_file": attr.string(),
         "fix_read_permission": attr.bool(),
     },

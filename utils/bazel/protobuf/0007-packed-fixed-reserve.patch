@@ -1,0 +1,25 @@
+diff --git a/src/google/protobuf/parse_context.cc b/src/google/protobuf/parse_context.cc
+index 22cdcbb..13d084f 100644
+--- a/src/google/protobuf/parse_context.cc
++++ b/src/google/protobuf/parse_context.cc
+@@ -263,10 +263,9 @@ template <typename T>
+ const char* EpsCopyInputStream::ReadPackedFixed(const char* ptr, int size,
+                                                 RepeatedField<T>* out) {
+   int nbytes = buffer_end_ + kSlopBytes - ptr;
++  out->Reserve(out->size() + size / sizeof(T));
+   while (size > nbytes) {
+     int num = nbytes / sizeof(T);
+-    int old_entries = out->size();
+-    out->Reserve(old_entries + num);
+     int block_size = num * sizeof(T);
+     auto dst = out->AddNAlreadyReserved(num);
+ #ifdef PROTOBUF_LITTLE_ENDIAN
+@@ -283,8 +282,6 @@ const char* EpsCopyInputStream::ReadPackedFixed(const char* ptr, int size,
+     nbytes = buffer_end_ + kSlopBytes - ptr;
+   }
+   int num = size / sizeof(T);
+-  int old_entries = out->size();
+-  out->Reserve(old_entries + num);
+   int block_size = num * sizeof(T);
+   auto dst = out->AddNAlreadyReserved(num);
+ #ifdef PROTOBUF_LITTLE_ENDIAN

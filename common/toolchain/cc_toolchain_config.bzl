@@ -1,4 +1,5 @@
-load("@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
+load(
+    "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
     "action_config",
     "artifact_name_pattern",
     "env_entry",
@@ -169,7 +170,6 @@ def _impl(ctx):
                     flag_group(
                         flags = [
                             "-g0",
-                            "-O2",
                             "-DNDEBUG",
                             "-ffunction-sections",
                             "-fdata-sections",
@@ -226,7 +226,7 @@ def _impl(ctx):
                             "-g",
                             "-fno-omit-frame-pointer",
                             "-DPONY_DISABLE_TCMALLOC",
-			    "-DPONY_USE_TSAN",
+                            "-DPONY_USE_TSAN",
                         ],
                     ),
                 ],
@@ -400,25 +400,25 @@ def _impl(ctx):
     ubsan_feature = feature(name = "ubsan", provides = ["sanitizer"])
 
     features = [
-            default_compile_flags_feature,
-            unfiltered_compile_flags_feature,
-            default_link_flags_feature,
-            supports_pic_feature,
-            objcopy_embed_flags_feature,
-            opt_feature,
-            dbg_feature,
-            static_linking_mode_feature,
-            asan_feature,
-            tsan_feature,
-            msan_feature,
-            ubsan_feature,
-        ]
+        default_compile_flags_feature,
+        unfiltered_compile_flags_feature,
+        default_link_flags_feature,
+        supports_pic_feature,
+        objcopy_embed_flags_feature,
+        opt_feature,
+        dbg_feature,
+        static_linking_mode_feature,
+        asan_feature,
+        tsan_feature,
+        msan_feature,
+        ubsan_feature,
+    ]
 
     cxx_builtin_include_directories = [
-            "/usr/lib/llvm-6.0/lib/clang/6.0.0/include",
-            "/usr/lib/clang/6.0.0/include",
-            "/usr/include",
-        ]
+        "/usr/lib/llvm-6.0/lib/clang/6.0.0/include",
+        "/usr/lib/clang/6.0.0/include",
+        "/usr/include",
+    ]
 
     artifact_name_patterns = []
 
@@ -437,7 +437,6 @@ def _impl(ctx):
         tool_path(name = "objdump", path = "/usr/bin/objdump"),
         tool_path(name = "strip", path = "/usr/bin/strip"),
     ]
-
 
     out = ctx.actions.declare_file(ctx.label.name)
     ctx.actions.write(out, "Fake executable")
@@ -459,16 +458,17 @@ def _impl(ctx):
             tool_paths = tool_paths,
             make_variables = make_variables,
             builtin_sysroot = builtin_sysroot,
-            cc_target_os = cc_target_os
+            cc_target_os = cc_target_os,
         ),
         DefaultInfo(
             executable = out,
         ),
     ]
-cc_toolchain_config =  rule(
+
+cc_toolchain_config = rule(
     implementation = _impl,
     attrs = {
-        "cpu": attr.string(mandatory=True, values=["k8"]),
+        "cpu": attr.string(mandatory = True, values = ["k8"]),
     },
     provides = [CcToolchainConfigInfo],
     executable = True,

@@ -1,0 +1,23 @@
+diff --git a/src/google/protobuf/repeated_field.h b/src/google/protobuf/repeated_field.h
+index 26d5847..a876fdf 100644
+--- a/src/google/protobuf/repeated_field.h
++++ b/src/google/protobuf/repeated_field.h
+@@ -2590,15 +2590,9 @@ void RepeatedPtrFieldBase::InternalSwap(RepeatedPtrFieldBase* other) {
+   GOOGLE_DCHECK(this != other);
+   GOOGLE_DCHECK(GetArena() == other->GetArena());
+ 
+-  // Swap all fields at once.
+-  static_assert(std::is_standard_layout<RepeatedPtrFieldBase>::value,
+-                "offsetof() requires standard layout before c++17");
+-  internal::memswap<offsetof(RepeatedPtrFieldBase, rep_) + sizeof(this->rep_) -
+-                    offsetof(RepeatedPtrFieldBase, current_size_)>(
+-      reinterpret_cast<char*>(this) +
+-          offsetof(RepeatedPtrFieldBase, current_size_),
+-      reinterpret_cast<char*>(other) +
+-          offsetof(RepeatedPtrFieldBase, current_size_));
++  std::swap(rep_, other->rep_);
++  std::swap(current_size_, other->current_size_);
++  std::swap(total_size_, other->total_size_);
+ }
+ 
+ }  // namespace internal

@@ -1,0 +1,15 @@
+diff --git a/BUILD b/BUILD
+index bb1587e..eb54b2e 100644
+--- a/BUILD
++++ b/BUILD
+@@ -891,7 +891,8 @@ py_proto_library(
+     srcs = COPIED_WELL_KNOWN_PROTOS,
+     include = "python",
+     data = select({
+-        "@ponyai//common/toolchain:use_py35": [
++        "@//common/toolchain/xavier:aarch64": [],
++        "@//common/toolchain:use_py35": [
+             ":python/google/protobuf/internal/_api_implementation.cpython-35m-x86_64-linux-gnu.so",
+             ":python/google/protobuf/pyext/_message.cpython-35m-x86_64-linux-gnu.so",
+         ],
+

@@ -1,0 +1,131 @@
+diff --git a/BUILD b/BUILD
+index eb54b2e..50215a7 100644
+--- a/BUILD
++++ b/BUILD
+@@ -1,9 +1,6 @@
+ # Bazel (https://bazel.build/) BUILD file for Protobuf.
+ 
+-load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
+-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test", "objc_library", native_cc_proto_library = "cc_proto_library")
+ load("@rules_proto//proto:defs.bzl", "proto_lang_toolchain", "proto_library")
+-load("@rules_python//python:defs.bzl", "py_library")
+ load(":cc_proto_blacklist_test.bzl", "cc_proto_blacklist_test")
+ 
+ licenses(["notice"])
+@@ -14,37 +11,9 @@ exports_files(["LICENSE"])
+ # build configuration
+ ################################################################################
+ 
+-# TODO(yannic): Remove in 3.14.0.
+-string_flag(
+-    name = "incompatible_use_com_google_googletest",
+-    build_setting_default = "true",
+-    values = ["true", "false"]
+-)
+-
+-config_setting(
+-    name = "use_com_google_googletest",
+-    flag_values = {
+-        "//:incompatible_use_com_google_googletest": "true"
+-    },
+-)
+-
+-GTEST = select({
+-    "//:use_com_google_googletest": [
+-        "@com_google_googletest//:gtest",
+-    ],
+-    "//conditions:default": [
+-        "//external:gtest",
+-    ],
+-})
++GTEST = ["@com_google_googletest//:gtest"]
+ 
+-GTEST_MAIN = select({
+-    "//:use_com_google_googletest": [
+-        "@com_google_googletest//:gtest_main",
+-    ],
+-    "//conditions:default": [
+-        "//external:gtest_main",
+-    ],
+-})
++GTEST_MAIN = ["@com_google_googletest//:gtest_main"]
+ 
+ ################################################################################
+ # ZLIB configuration
+@@ -365,7 +334,7 @@ cc_library(
+     deps = [dep + "_proto" for dep in proto[1][1]],
+ ) for proto in WELL_KNOWN_PROTO_MAP.items()]
+ 
+-[native_cc_proto_library(
++[cc_proto_library(
+     name = proto + "_cc_proto",
+     deps = [proto + "_proto"],
+     visibility = ["//visibility:private"],
+@@ -752,6 +721,8 @@ py_library(
+     name = "python_srcs",
+     srcs = glob(
+         [
++            # NOTE(laiwei): must include __init__.py to avoid package conflicts.
++            "python/google/__init__.py",
+             "python/google/protobuf/**/*.py",
+         ],
+         exclude = [
+@@ -905,7 +876,8 @@ py_proto_library(
+     protoc = ":protoc",
+     py_libs = [
+         ":python_srcs",
+-        "@six//:six",
++        # NOTE(laiwei): python six package has name `six_py` in our codebase.
++        "@six_py//:six",
+     ],
+     srcs_version = "PY2AND3",
+     visibility = ["//visibility:public"],
+diff --git a/protobuf.bzl b/protobuf.bzl
+index 7091dea..815e933 100644
+--- a/protobuf.bzl
++++ b/protobuf.bzl
+@@ -1,7 +1,4 @@
+-load("@bazel_skylib//lib:versions.bzl", "versions")
+-load("@rules_cc//cc:defs.bzl", "cc_library")
+ load("@rules_proto//proto:defs.bzl", "ProtoInfo")
+-load("@rules_python//python:defs.bzl", "py_library", "py_test")
+ 
+ def _GetPath(ctx, path):
+     if ctx.label.workspace_root:
+@@ -336,7 +333,7 @@ def cc_proto_library(
+         cc_libs = cc_libs + [default_runtime]
+     if use_grpc_plugin:
+         cc_libs = cc_libs + ["//external:grpc_lib"]
+-    cc_library(
++    native.cc_library(
+         name = name,
+         srcs = gen_srcs,
+         hdrs = gen_hdrs,
+@@ -492,7 +489,7 @@ def py_proto_library(
+ 
+     if default_runtime and not default_runtime in py_libs + deps:
+         py_libs = py_libs + [default_runtime]
+-    py_library(
++    native.py_library(
+         name = name,
+         srcs = outs + py_extra_srcs,
+         deps = py_libs + deps,
+@@ -515,17 +512,9 @@ def internal_protobuf_py_tests(
+     """
+     for m in modules:
+         s = "python/google/protobuf/internal/%s.py" % m
+-        py_test(
++        native.py_test(
+             name = "py_%s" % m,
+             srcs = [s],
+             main = s,
+             **kargs
+         )
+-
+-def check_protobuf_required_bazel_version():
+-    """For WORKSPACE files, to check the installed version of bazel.
+-
+-    This ensures bazel supports our approach to proto_library() depending on a
+-    copied filegroup. (Fixed in bazel 0.5.4)
+-    """
+-    versions.check(minimum_bazel_version = "0.5.4")

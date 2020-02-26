@@ -64,12 +64,23 @@ new_local_repository(
 )
 
 # protobuf
+# (|cc_|java_)proto_library rules implicitly depend on @com_google_protobuf.
 pony_http_archive(
     name = "com_google_protobuf",
-    patch_file = "utils/bazel/protobuf.patch",
-    sha256 = "8e0236242106e680b4f9f576cc44b8cd711e948b20a9fc07769b0a20ceab9cc4",
-    strip_prefix = "protobuf-3.4.1",
-    urls = ["https://github.com/google/protobuf/archive/v3.4.1.tar.gz"],
+    patch_files = [
+        "utils/bazel/protobuf/0001-protobuf.patch",
+        "utils/bazel/protobuf/0002-undef-major-minor.patch",
+        "utils/bazel/protobuf/0003-xavier-dont-use-python-so.patch",
+        "utils/bazel/protobuf/0004-fix-build-file.patch",
+        "utils/bazel/protobuf/0005-suppress-deprecated-warning.patch",
+        "utils/bazel/protobuf/0006-repeated-field.patch",
+        "utils/bazel/protobuf/0007-packed-fixed-reserve.patch",
+    ],
+    sha256 = "d0f5f605d0d656007ce6c8b5a82df3037e1d8fe8b121ed42e536f569dec16113",
+    strip_prefix = "protobuf-3.14.0",
+    urls = [
+        "https://github.com/protocolbuffers/protobuf/archive/v3.14.0.tar.gz",
+    ],
 )
 
 # GLM
@@ -140,10 +151,10 @@ pony_http_archive(
     build_file = "utils/bazel/nanoflann.BUILD",
     patch_file = "utils/bazel/nanoflann.patch",
     sha256 = "5ef4dfb23872379fe9eb306aabd19c9df4cae852b72a923af01aea5e8d7a59c3",
+    strip_prefix = "nanoflann-1.2.3",
     urls = [
         "https://github.com/jlblancoc/nanoflann/archive/v1.2.3.tar.gz",
     ],
-    strip_prefix = "nanoflann-1.2.3",
 )
 
 pony_http_archive(
