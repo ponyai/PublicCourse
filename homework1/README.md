@@ -46,7 +46,7 @@ and add unittests to verify the correctness.
 
 ### 4. Get familiar with the simulation environment in the final project. 
 
-Same with last homework, the first step in this homework is to get familiar with the environment. To give you a first glance of the simulation system, you could run following command:
+As you may know, the final project will need you to implement an agent to compete with others in a simulation environment. To give you a first glance of the simulation system, you could run following command:
 
 ```
 bazel run -c opt //pnc:simulation_main -- --multi_process_mode=false
