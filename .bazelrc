@@ -12,7 +12,7 @@ build --cxxopt='-std=c++14'
 
 build --action_env=PATH="/bin:/usr/bin"
 build --crosstool_top=//common/toolchain:default
-build --jobs 8 --local_ram_resources=HOST_RAM*.5
+build --jobs 8 --ram_utilization_factor 50
 
 build --experimental_strict_action_env
 build --action_env=PATH="/bin:/usr/bin"
@@ -25,7 +25,7 @@ build --crosstool_top=//common/toolchain:default
 build --python_version=PY3
 build --custom_malloc=//common/toolchain:malloc
 build --jobs 8
-build --local_ram_resources=HOST_RAM*.5
+build --ram_utilization_factor 50
 
 # This line doesn't tell our compiler to optimize towards AMD K8. Instead, 'k8' is just an internal
 # name for AMD64/EM64T CPUs. This word is for looking up a proper configuration in
