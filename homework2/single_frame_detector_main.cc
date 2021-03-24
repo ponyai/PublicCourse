@@ -6,8 +6,8 @@
 #include <glog/logging.h>
 #include <QtWidgets/QApplication>
 
-#include "homework3/pointcloud_viewer.h"
-#include "homework3/single_frame_detector.h"
+#include "homework2/pointcloud_viewer.h"
+#include "homework2/single_frame_detector.h"
 
 DEFINE_string(pony_data_dir, "", "The path of pony data.");
 

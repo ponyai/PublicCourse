@@ -10,8 +10,8 @@
 #include "common/utils/file/file.h"
 #include "common/utils/file/path.h"
 #include "common/utils/strings/format.h"
-#include "homework3/obstacle.h"
-#include "homework3/single_frame_detector.h"
+#include "homework2/obstacle.h"
+#include "homework2/single_frame_detector.h"
 
 class PointCloudViewer : public utils::display::PainterWidgetBase {
  public:

@@ -5,7 +5,7 @@ We have learnt about the outline of perception on autonomous vehicles. Now, let'
 In this homework, we provide some frames of pointcloud data. You can find the data at [this link](https://pan.baidu.com/s/1yJa9Mn3Rawu1F5c373_kjg) with extraction code `udzr`. To do this homework, you will need to run the binary single_frame_detector_main with the data placed at pony_data_dir. When your implementation has been done, you can find the obstacle polygons labelled on the provided viewer. You only need to implement the code for ground detection and segmentation inside `single_frame_detector.cc`.
 
 To run the binary:
-`bazel run -c opt //homework3:single_frame_detector_main -- --pony_data_dir ${Where you placed the extracted data files}`
+`bazel run -c opt //homework2:single_frame_detector_main -- --pony_data_dir ${Where you placed the extracted data files}`
 
 You need to press `N` to go to the next frame and immediately after launching this program.
 

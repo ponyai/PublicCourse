@@ -9,7 +9,7 @@
 
 #include "common/utils/math/vec2d.h"
 #include "homework2/pointcloud.h"
-#include "homework3/obstacle.h"
+#include "homework2/obstacle.h"
 
 class SingleFrameDetector {
  public:

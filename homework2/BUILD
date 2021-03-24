@@ -9,14 +9,24 @@ cc_library(
 )
 
 cc_library(
+    name = "pointcloud",
+    srcs = ["pointcloud.cc"],
+    hdrs = ["pointcloud.h"],
+    deps = [
+        "@eigen//:eigen",
+        "@glog//:glog",
+    ],
+)
+
+cc_library(
     name = "single_frame_detector",
     srcs = ["single_frame_detector.cc"],
     hdrs = ["single_frame_detector.h"],
     deps = [
 	":obstacle",
+        ":pointcloud",
         "//common/utils/math",
         "//common/utils/math/transform",
-        "//homework2:pointcloud",
         "@eigen//:eigen",
         "@glog//:glog",
     ],
