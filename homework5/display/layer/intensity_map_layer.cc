@@ -1,6 +1,6 @@
 // Copyright @2018 Pony AI Inc. All rights reserved.
 
-#include "homework6/display/layer/intensity_map_layer.h"
+#include "homework5/display/layer/intensity_map_layer.h"
 
 #include "common/proto/map.pb.h"
 #include "common/utils/common/defines.h"
@@ -13,7 +13,7 @@ constexpr const char kIntensityMapConfigFilename[] = "map_image_config.txt";
 
 namespace {
 std::string MapMetaInfoDir() {
-  return file::path::Join(file::path::GetProjectRootPath(), "homework6", "map", "grid2");
+  return file::path::Join(file::path::GetProjectRootPath(), "homework5", "map", "grid2");
 }
 }
 

@@ -7,12 +7,12 @@
 
 #include "glog/logging.h"
 
-namespace homework6 {
+namespace homework5 {
 namespace map {
 
 class MapLib {
  public:
-  MapLib() { CHECK(file::ReadFileToProto("homework6/map/grid2/map_proto.txt", &map_data_)); }
+  MapLib() { CHECK(file::ReadFileToProto("homework5/map/grid2/map_proto.txt", &map_data_)); }
 
   const interface::map::Map& map_proto() const { return map_data_; }
 
@@ -21,4 +21,4 @@ class MapLib {
 };
 
 }  // namespace map
-}  // namespace homework6
+}  // namespace homework5

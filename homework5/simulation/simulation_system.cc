@@ -1,20 +1,20 @@
 // Copyright @2018 Pony AI Inc. All rights reserved.
 
-#include "homework6/simulation/simulation_system.h"
+#include "homework5/simulation/simulation_system.h"
 #include "common/proto/agent_status.pb.h"
 #include "common/proto/simulation.pb.h"
 #include "common/utils/common/mutex.h"
 
 #include <glog/logging.h>
-#include "homework6/map/map_lib.h"
+#include "homework5/map/map_lib.h"
 
 namespace simulation {
 
-SimulationSystem::SimulationSystem(const interface::homework6::SimulationConfig& simulation_config)
+SimulationSystem::SimulationSystem(const interface::homework5::SimulationConfig& simulation_config)
     : simulation_config_(simulation_config) {}
 
 void SimulationSystem::Initialize() {
-  map_lib_ = std::make_unique<homework6::map::MapLib>();
+  map_lib_ = std::make_unique<homework5::map::MapLib>();
   CHECK(file::ReadTextFileToProto(utils::path::GetVehicleParamsPath(), &vehicle_params_));
 
   simulation_world_ =

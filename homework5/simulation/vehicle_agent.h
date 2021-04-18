@@ -9,7 +9,7 @@
 #include "common/proto/vehicle_params.pb.h"
 #include "common/utils/file/file.h"
 #include "common/utils/file/path.h"
-#include "homework6/map/map_lib.h"
+#include "homework5/map/map_lib.h"
 
 namespace simulation {
 
@@ -25,7 +25,7 @@ class VehicleAgent {
   // Vehicle's parameters
   const interface::vehicle::VehicleParams& vehicle_params() const { return vehicle_params_; }
   // Map lib of the lib
-  const homework6::map::MapLib& map_lib() const { return map_lib_; }
+  const homework5::map::MapLib& map_lib() const { return map_lib_; }
   // Name of the agent
   const std::string& name() const { return name_; }
 
@@ -37,7 +37,7 @@ class VehicleAgent {
 
  private:
   interface::vehicle::VehicleParams vehicle_params_;
-  homework6::map::MapLib map_lib_;
+  homework5::map::MapLib map_lib_;
   std::string name_;
 };
 

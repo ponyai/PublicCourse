@@ -7,10 +7,10 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QVBoxLayout>
-#include "homework6/display/pnc_painter_widget.h"
-#include "homework6/display/q_variable_dock_widget.h"
-#include "homework6/display/variable_view.h"
-#include "homework6/simulation/simulation_system.h"
+#include "homework5/display/pnc_painter_widget.h"
+#include "homework5/display/q_variable_dock_widget.h"
+#include "homework5/display/variable_view.h"
+#include "homework5/simulation/simulation_system.h"
 
 namespace display {
 

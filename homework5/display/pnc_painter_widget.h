@@ -16,12 +16,12 @@
 #include "common/utils/display/painter_widget_controller.h"
 #include "common/utils/display/qt_macro.h"
 #include "common/utils/gl/context.h"
-#include "homework6/display/layer/intensity_map_layer.h"
-#include "homework6/display/layer/road_graph_layer.h"
-#include "homework6/display/layer/vehicle_layer.h"
-#include "homework6/display/user_interface_data.h"
+#include "homework5/display/layer/intensity_map_layer.h"
+#include "homework5/display/layer/road_graph_layer.h"
+#include "homework5/display/layer/vehicle_layer.h"
+#include "homework5/display/user_interface_data.h"
 
-#include "homework6/display/pnc_gl_painter.h"
+#include "homework5/display/pnc_gl_painter.h"
 
 namespace utils {
 namespace display {
@@ -51,7 +51,7 @@ class PncPainterWidget : public PainterWidgetBase {
   interface::simulation::SimulationSystemData simulation_system_data_;
   interface::vehicle::VehicleParams vehicle_params_;
 
-  std::unique_ptr<homework6::map::MapLib> map_lib_;
+  std::unique_ptr<homework5::map::MapLib> map_lib_;
   utils::display::UserInterfaceData user_interface_data_;
 };
 

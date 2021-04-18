@@ -5,8 +5,8 @@ cc_library(
     srcs = ["agents.cc"],
     hdrs = ["agents.h"],
     deps = [
-        "//homework6/agents/sample:sample_agent",
-        "//homework6/simulation:vehicle_agent_factory",
+        "//homework5/agents/sample:sample_agent",
+        "//homework5/simulation:vehicle_agent_factory",
     ],
     alwayslink = 1,
 )

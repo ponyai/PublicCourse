@@ -3,8 +3,8 @@
 #pragma once
 
 #include "common/utils/file/file.h"
-#include "homework6/display/main_window.h"
-#include "homework6/proto/simulation_config.pb.h"
+#include "homework5/display/main_window.h"
+#include "homework5/proto/simulation_config.pb.h"
 
 DEFINE_string(route_file_path, "", "Path of route file");
 
@@ -14,7 +14,7 @@ class SimulationMainWindow : public MainWindow {
  public:
   SimulationMainWindow(QWidget* parent) : MainWindow(parent) {
     setWindowTitle("Simulation");
-    interface::homework6::SimulationConfig simulation_config;
+    interface::homework5::SimulationConfig simulation_config;
     CHECK(file::ReadTextFileToProto(FLAGS_route_file_path, &simulation_config));
     simulation_system_ = std::make_unique<simulation::SimulationSystem>(simulation_config);
     simulation_system_thread_ = std::thread([this]() {

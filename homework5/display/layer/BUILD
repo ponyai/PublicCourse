@@ -26,8 +26,8 @@ cc_library(
         "//common/utils/file",
         "//common/utils/file:path",
         "//common/utils/gl:primitives",
-        "//homework6/display:pnc_gl_painter",
-        "//homework6/display:user_interface_data",
-        "//homework6/map:map_lib",
+        "//homework5/display:pnc_gl_painter",
+        "//homework5/display:user_interface_data",
+        "//homework5/map:map_lib",
     ],
 )

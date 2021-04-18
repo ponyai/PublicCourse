@@ -6,14 +6,14 @@
 #include "common/proto/agent_status.pb.h"
 #include "common/proto/control.pb.h"
 #include "glog/logging.h"
-#include "homework6/agents/agents.h"
-#include "homework6/proto/simulation_config.pb.h"
+#include "homework5/agents/agents.h"
+#include "homework5/proto/simulation_config.pb.h"
 
 namespace simulation {
 
 class SimulationEngineBase {
  public:
-  explicit SimulationEngineBase(const interface::homework6::SimulationConfig& simulation_config) {
+  explicit SimulationEngineBase(const interface::homework5::SimulationConfig& simulation_config) {
     simulation_config_.CopyFrom(simulation_config);
   }
   virtual ~SimulationEngineBase() = default;
@@ -50,6 +50,6 @@ class SimulationEngineBase {
 
   bool agent_status_map_set_ = false;
 
-  interface::homework6::SimulationConfig simulation_config_;
+  interface::homework5::SimulationConfig simulation_config_;
 };
 };

@@ -1,6 +1,6 @@
 // Copyright @2018 Pony AI Inc. All rights reserved.
 
-#include "homework6/display/pnc_painter_widget.h"
+#include "homework5/display/pnc_painter_widget.h"
 
 #include <cmath>
 
@@ -14,8 +14,8 @@
 
 #include "common/utils/file/file.h"
 #include "common/utils/file/path.h"
-#include "homework6/display/pnc_gl_painter.h"
-#include "homework6/display/pnc_painter_widget_controller.h"
+#include "homework5/display/pnc_gl_painter.h"
+#include "homework5/display/pnc_painter_widget_controller.h"
 
 static constexpr char kLayerRoadGraph[] = "layer/road_graph";
 static constexpr char kLayerIntensityMap[] = "layer/intensity_map";
@@ -39,7 +39,7 @@ PncPainterWidget::PncPainterWidget(Options options, QWidget* parent)
 
 void PncPainterWidget::Initialize() {
   CHECK(file::ReadFileToProto(utils::path::GetVehicleParamsPath(), &vehicle_params_));
-  map_lib_ = std::make_unique<homework6::map::MapLib>();
+  map_lib_ = std::make_unique<homework5::map::MapLib>();
   layer_manager_->AddLayer(
       std::make_unique<utils::display::RoadGraphLayer>(
           kLayerRoadGraph, map_lib_.get(), simulation_system_data_, user_interface_data_),

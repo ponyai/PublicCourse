@@ -13,15 +13,15 @@
 #include "common/utils/math/transform/transform.h"
 #include "common/utils/math/vec2d.h"
 #include "common/utils/math/vec3d.h"
-#include "homework6/proto/simulation_config.pb.h"
-#include "homework6/simulation/dynamic_lib/lib_vehicle_status_model_solver.h"
+#include "homework5/proto/simulation_config.pb.h"
+#include "homework5/simulation/dynamic_lib/lib_vehicle_status_model_solver.h"
 
 namespace simulation {
 
 class SimulationWorld {
  public:
   SimulationWorld(const interface::map::Map& map,
-                  const interface::homework6::SimulationConfig& simulation_config,
+                  const interface::homework5::SimulationConfig& simulation_config,
                   const interface::vehicle::VehicleParams& vehicle_params) {
     map_.CopyFrom(map);
     vehicle_params_.CopyFrom(vehicle_params);
@@ -66,7 +66,7 @@ class SimulationWorld {
 
   interface::vehicle::VehicleParams vehicle_params_;
 
-  interface::homework6::SimulationConfig simulation_config_;
+  interface::homework5::SimulationConfig simulation_config_;
 };
 
 };  // namespace simulation

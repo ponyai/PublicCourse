@@ -1,6 +1,6 @@
 // Copyright @2018 Pony AI Inc. All rights reserved.
 
-#include "homework6/display/pnc_gl_painter.h"
+#include "homework5/display/pnc_gl_painter.h"
 
 #include <glog/logging.h>
 #include <QtWidgets/QOpenGLWidget>
@@ -10,7 +10,7 @@
 #include "common/utils/containers/array_view.h"
 #include "common/utils/file/path.h"
 #include "common/utils/gl/basic_primitives.h"
-#include "homework6/display/gl_layers.h"
+#include "homework5/display/gl_layers.h"
 
 using interface::geometry::Point3D;
 using math::Vec2d;

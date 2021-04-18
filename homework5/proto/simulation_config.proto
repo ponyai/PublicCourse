@@ -2,7 +2,7 @@ syntax = "proto2";
 
 import "common/proto/route.proto";
 
-package interface.homework6;
+package interface.homework5;
 
 message SimulationConfig {
     optional string agent_type = 1;

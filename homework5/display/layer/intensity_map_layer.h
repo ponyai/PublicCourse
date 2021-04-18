@@ -6,8 +6,8 @@
 #include <vector>
 
 #include "common/utils/display/layer.h"
-#include "homework6/display/pnc_gl_painter.h"
-#include "homework6/map/map_lib.h"
+#include "homework5/display/pnc_gl_painter.h"
+#include "homework5/map/map_lib.h"
 
 namespace utils {
 namespace display {
