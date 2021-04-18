@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+import "common/proto/route.proto";
+
+package interface.homework6;
+
+message SimulationConfig {
+    optional string agent_type = 1;
+    optional string agent_name = 2;
+    optional interface.route.Route route = 3;
+}

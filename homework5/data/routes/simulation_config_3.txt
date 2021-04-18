@@ -1,0 +1,18 @@
+agent_name: "pony_sample"
+agent_type: "sample_agent"
+route {
+  start_point {
+    x: 142.623
+    y: 103.703
+  }
+  start_orientation {
+    x: 0.0
+    y: 0.0
+    z: 0.707
+    w: 0.707
+  }
+  end_point {
+    x: 2.403
+    y: 87.5
+  }
+}
