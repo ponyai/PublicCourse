@@ -118,7 +118,7 @@ In the final project, the vehicle agent implemented by you will be running in a 
 * Size of source code directory should be less than 10MB before packaging. 
 
 ## Due Date
-June 10th (end of 15th week)
+To be determined
 
 ## What To Submit
 * The source code copied from `/pnc/agents/{unique_id}`. 
