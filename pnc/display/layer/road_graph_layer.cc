@@ -72,7 +72,10 @@ RoadGraphLayer::RoadGraphLayer(
 }
 
 void RoadGraphLayer::Draw() const {
-  static_cast<PncOpenglPainter*>(gl_painter_)->DrawRoadGraph(map_data(), true, true);
+  interface::geometry::Vector3d pos_proto =
+      simulation_world_data_.vehicle_localization().pose().translation();
+  math::Vec3d pos(pos_proto.x(), pos_proto.y(), pos_proto.z());
+  static_cast<PncOpenglPainter*>(gl_painter_)->DrawRoadGraph(map_data(), true, true, pos);
   DrawTrafficLightModel(map_data(), simulation_world_data_);
 }
 
@@ -80,17 +83,25 @@ void RoadGraphLayer::DrawTrafficLightModel(
     const interface::map::Map& road_graph,
     const interface::simulation::SimulationSystemData& simulation_world_data) const {
   std::unordered_map<std::string, Color> color_map;
-  if (simulation_world_data.has_traffic_light_status()) {
+  if (simulation_world_data.has_traffic_light()) {
     for (const auto& traffic_light_status :
-         simulation_world_data.traffic_light_status().single_traffic_light_status()) {
-      if (traffic_light_status.color() == interface::map::Bulb::RED) {
-        color_map[traffic_light_status.id().id()] = Color::Red();
+         simulation_world_data.traffic_light().traffic_light_status()) {
+      if (traffic_light_status.detection_status() !=
+          interface::traffic_light::DetectionStatus::OK) {
+        continue;
       }
-      if (traffic_light_status.color() == interface::map::Bulb::GREEN) {
-        color_map[traffic_light_status.id().id()] = Color::Green();
+
+      if (traffic_light_status.bulbs_status(0).color() ==
+          interface::traffic_light::TrafficLightColor::RED) {
+        color_map[traffic_light_status.traffic_light_id()] = Color::Red();
       }
-      if (traffic_light_status.color() == interface::map::Bulb::YELLOW) {
-        color_map[traffic_light_status.id().id()] = Color::Yellow();
+      if (traffic_light_status.bulbs_status(0).color() ==
+          interface::traffic_light::TrafficLightColor::GREEN) {
+        color_map[traffic_light_status.traffic_light_id()] = Color::Green();
+      }
+      if (traffic_light_status.bulbs_status(0).color() ==
+          interface::traffic_light::TrafficLightColor::YELLOW) {
+        color_map[traffic_light_status.traffic_light_id()] = Color::Yellow();
       }
     }
   }
@@ -109,7 +120,17 @@ void RoadGraphLayer::DrawTrafficLightModel(
     if (traffic_light.bulb().empty()) {
       continue;
     }
-    Point3D traffic_light_point = traffic_light.bulb(1).location();
+    if (!traffic_light.has_stop_line()) {
+      continue;
+    }
+    Point3D traffic_light_point = traffic_light.bulb(0).location();
+
+    interface::geometry::Vector3d pos_proto =
+        simulation_world_data_.vehicle_localization().pose().translation();
+    double diff = std::pow(traffic_light_point.x() - pos_proto.x(), 2) +
+                  std::pow(traffic_light_point.y() - pos_proto.y(), 2);
+    if (diff > 40000) { continue; }
+
     traffic_light_point.set_z(kDefaultTrafficLightHeight);
 
     line_vertices.clear();
@@ -118,10 +139,10 @@ void RoadGraphLayer::DrawTrafficLightModel(
     CHECK_GE(stop_line.point_size(), 2);
     for (const auto& point : stop_line.point()) {
       line_vertices.push_back(
-          math::Vec3d(point.x(), point.y(), point.z() + GetGlLayer(kLayerRoadGraphRoi)));
+          math::Vec3d(point.x(), point.y(), 0));
     }
     // Draw stop line.
-    Color stop_line_color = Color::Blue();
+    Color stop_line_color = Color::Grey();
     if (color_map.find(traffic_light.id().id()) != color_map.end()) {
       stop_line_color = color_map[traffic_light.id().id()];
     }
@@ -142,7 +163,7 @@ void RoadGraphLayer::DrawTrafficLightModel(
     line_vertices.push_back(math::Vec3d(traffic_light_point.x(), traffic_light_point.y(),
                                         traffic_light_point.z() + GetGlLayer(kLayerTrafficLight)));
     line_vertices.push_back(
-        math::Vec3d(point.x(), point.y(), point.z() + GetGlLayer(kLayerRoadGraphRoi)));
+        math::Vec3d(point.x(), point.y(), 0));
     // Draw traffic line.
     traffic_lines.SetData(
         utils::ConstArrayView<math::Vec3d>(line_vertices.data(), line_vertices.size()),

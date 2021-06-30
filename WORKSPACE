@@ -35,10 +35,7 @@ pony_http_archive(
     build_file = "utils/bazel/eigen.BUILD",
     sha256 = "c5ca6e3442fb48ae75159ca7568854d9ba737bc351460f27ee91b6f3f9fd1f3d",
     strip_prefix = "eigen-3.3.4",
-    urls = [
-        "https://gitlab.com/libeigen/eigen/-/archive/3.3.4/eigen-3.3.4.tar.gz",
-        "file:///home/liwei/Downloads/eigen-3.3.4.tar.gz"
-    ],
+    urls = ["https://gitlab.com/libeigen/eigen/-/archive/3.3.4/eigen-3.3.4.tar.gz"],
 )
 
 # boost

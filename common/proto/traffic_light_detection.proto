@@ -1,0 +1,56 @@
+syntax = "proto2";
+
+package interface.traffic_light;
+
+enum TrafficLightColor {
+  RED = 0;
+  YELLOW = 1;
+  GREEN = 2;
+  OFF = 3;
+  UNKNOWN = 4;
+}
+
+enum DetectionStatus {
+  // This field indicates that everything's working fine. TrafficLightColor is RED/YELLOW/GREEN.
+  OK = 0;
+
+  // This field indicates that the lights have been OFF for a certain amount of time.
+  BROKEN = 1;
+
+  // This field indicates that the lights are partially/completely out of view, and no bright bulb
+  // can be seen.
+  BAD_CROP = 2;
+
+  // This field indicates scenarios below:
+  //  The lights are blocked by some obstacle
+  //  The lights are in bad backlighting or rainy weather
+  //  The lights are not cropped because of error from localization or calibration
+  //  The lights are too far away, we cannot give it a good type
+  UNKNOWN_STATUS = 10;
+}
+
+message BulbStatus {
+  // The bulb index of the traffic light id.
+  optional int32 bulb_index = 1;
+
+  // When bulb's status is on, only RED/YELLOW/GREEN is valid.
+  // UNKNOWN/OFF is used by perception internally.
+  optional TrafficLightColor color = 3;
+
+  // The bulb's color changes between RED/YELLOW/GREEN and OFF, lasting some time.
+  optional bool is_blinking = 4 [default = false];
+}
+
+message TrafficLightStatus {
+  optional string traffic_light_id = 1;
+
+  optional DetectionStatus detection_status = 5 [default = OK];
+
+  // The bulbs_status are valid when detection status is OK.
+  repeated BulbStatus bulbs_status = 6;
+}
+
+message TrafficLightDetection {
+  repeated TrafficLightStatus traffic_light_status = 3;
+  optional double camera_group_timestamp = 5;
+}

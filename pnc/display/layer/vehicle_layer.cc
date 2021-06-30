@@ -46,6 +46,12 @@ void VehicleLayer::Draw() const {
       DrawRouterRequest(agent_status.route_status().destination());
     }
   }
+  const interface::agent::LocalizationResult& localization = data_.vehicle_localization();
+  math::Vec3d vehicle_reference_point(localization.pose().translation().x(),
+                                      localization.pose().translation().y(),
+                                      GetGlLayer(utils::display::kLayerVehicle));
+  DrawVehicle(vehicle_, "", vehicle_reference_point,
+              math::transform::ToEigen(localization.pose().rotation()), vehicle_params_);
 }
 
 void VehicleLayer::DrawVehicle(const utils::display::Vehicle& vehicle,

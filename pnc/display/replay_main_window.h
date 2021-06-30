@@ -65,21 +65,6 @@ class ReplayMainWindow : public MainWindow {
     connect(action, &QAction::triggered, this, [this] { replay_system_->PushPauseCommand(); });
 
     menu->addSeparator();
-
-    action = menu->addAction(tr("&Half speed"));
-    QList<QKeySequence> shortcuts;
-    shortcuts << QKeySequence(Qt::Key_Minus) << QKeySequence(Qt::Key_Underscore);
-    action->setShortcuts(shortcuts);
-    connect(action, &QAction::triggered, this,
-            [this] { replay_system_->PushSimulationSpeedCommand(0.5); });
-
-    action = menu->addAction(tr("&Double speed"));
-    shortcuts.clear();
-    shortcuts << QKeySequence(Qt::Key_Plus) << QKeySequence(Qt::Key_Equal);
-    action->setShortcuts(shortcuts);
-    connect(action, &QAction::triggered, this,
-            [this] { replay_system_->PushSimulationSpeedCommand(2.0); });
-    menu->addSeparator();
     action = menu->addAction(tr("&Quit"));
     action->setShortcut(QKeySequence::Quit);
     connect(action, &QAction::triggered, this, [this] { QApplication::exit(0); });
@@ -100,12 +85,14 @@ class ReplayMainWindow : public MainWindow {
     for (const auto& agent_data : data_.vehicle_agent()) {
       vehicle_name_list_.push_back(agent_data.name());
     }
+    vehicle_name_list_.push_back("Vehicle");
 
     for (const std::string& name : vehicle_name_list_) {
       action = menu->addAction(tr(name.data()));
       connect(action, &QAction::triggered, this,
               [this, &name] { painter_widget_->SetVehiclePerspective(name); });
     }
+    painter_widget_->SetVehiclePerspective("Vehicle");
   }
 
   std::unique_ptr<simulation::ReplaySystem> replay_system_;

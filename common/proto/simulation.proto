@@ -6,12 +6,17 @@ import "common/proto/agent_status.proto";
 import "common/proto/agent_metric.proto";
 import "common/proto/perception.proto";
 import "common/proto/display.proto";
+import "common/proto/vehicle_status.proto";
+import "common/proto/traffic_light_detection.proto";
 
 message SimulationSystemData {
     repeated VehicleAgentData vehicle_agent = 1;
     optional interface.perception.PerceptionTrafficLightStatus traffic_light_status = 2;
     repeated interface.perception.PerceptionObstacle pedestrian = 4;
     optional double simulation_time = 3;
+    optional interface.perception.PerceptionObstacles obstacles = 5;
+    optional interface.agent.LocalizationResult vehicle_localization = 6;
+    optional interface.traffic_light.TrafficLightDetection traffic_light = 7;
 }
 
 message VehicleAgentData {

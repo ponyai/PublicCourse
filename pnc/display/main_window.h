@@ -101,6 +101,13 @@ class MainWindow : public QMainWindow {
     }
     variable_view_data->emplace("vehicle_status", vehicle_status_variable_view_list);
     variable_view_data->emplace("debug_variables", debug_variable_view_list);
+
+    double timestamp = simulation_system_data.vehicle_localization().sensor_timestamp();
+    utils::display::VariableView variable_view("time");
+    variable_view.AddDoubleVariable("timestamp", timestamp);
+    interface::display::VariableViewList timestamp_list;
+    timestamp_list.add_variable_view()->CopyFrom(variable_view.ToProtoBuffer());
+    variable_view_data->emplace("time", timestamp_list);
   }
 
   // TODO refactor setup menu

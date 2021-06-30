@@ -5,6 +5,9 @@
 #include "common/proto/map.pb.h"
 
 #include "glog/logging.h"
+#include "gflags/gflags.h"
+
+DECLARE_string(map_data_path);
 
 namespace pnc {
 namespace map {

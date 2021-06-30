@@ -5,7 +5,7 @@
 namespace utils {
 namespace display {
 
-float GetGlLayer(GlLayers l) { return l * 0.02f; }
+float GetGlLayer(GlLayers l) { return 0.0f; }
 
 }  // namespace display
 }  // namespace utils

@@ -20,3 +20,22 @@ message VehicleStatus {
     // in Vehicle Coordinate System, in m/s^2. It doesn't include gravitational acceleration.
     optional interface.geometry.Vector3d acceleration_vcs = 7;
 }
+
+message LocalizationResult {
+  // Measurement timestamp in sensor clock, in seconds since epoch.
+  optional double sensor_timestamp = 1;
+
+  // Localized pose.
+  optional interface.geometry.Rigid3d pose = 4;
+
+  // The linear velocity of the origin of Vehicle Coordinate System,
+  // in Smooth Coordinate System, in m/s.
+  optional interface.geometry.Vector3d velocity = 5;
+  // The negative angular velocity of Smooth Coordinate System in Vehicle Coordinate System,
+  //  in rad/s. It doesn't include earth's rotation.
+  optional interface.geometry.Vector3d angular_velocity_vcs = 6;
+  // The negative acceleration of the origin of Smooth Coordinate System,
+  // in Vehicle Coordinate System, in m/s^2. It doesn't include gravatational
+  // acceleration.
+  optional interface.geometry.Vector3d acceleration_vcs = 7;
+}

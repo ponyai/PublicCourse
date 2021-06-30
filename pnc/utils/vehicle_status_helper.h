@@ -18,6 +18,7 @@ namespace vehicle {
 class VehicleStatusHelper {
  public:
   explicit VehicleStatusHelper(const interface::agent::VehicleStatus& proto);
+  explicit VehicleStatusHelper(const interface::agent::LocalizationResult& proto);
   VehicleStatusHelper(const Eigen::Vector3d& position, const Eigen::Quaterniond& orientation,
                       const Eigen::Vector3d& velocity, const Eigen::Vector3d& angular_velocity_vcs,
                       const Eigen::Vector3d& acceleration_vcs);
