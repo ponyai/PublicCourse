@@ -15,6 +15,13 @@ VehicleStatusHelper::VehicleStatusHelper(const interface::agent::VehicleStatus& 
       angular_velocity_vcs_(ToEigen(pb.angular_velocity_vcs())),
       acceleration_vcs_(ToEigen(pb.acceleration_vcs())) {}
 
+VehicleStatusHelper::VehicleStatusHelper(const interface::agent::LocalizationResult& pb)
+    : position_(ToEigen(pb.pose().translation())),
+      orientation_(ToEigen(pb.pose().rotation())),
+      velocity_(ToEigen(pb.velocity())),
+      angular_velocity_vcs_(ToEigen(pb.angular_velocity_vcs())),
+      acceleration_vcs_(ToEigen(pb.acceleration_vcs())) {}
+
 VehicleStatusHelper::VehicleStatusHelper(const Eigen::Vector3d& position,
                                          const Eigen::Quaterniond& orientation,
                                          const Eigen::Vector3d& velocity,

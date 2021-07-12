@@ -19,30 +19,20 @@ class ReplaySystem : public SystemBase {
     bool playback_terminated = false;
   };
 
-  explicit ReplaySystem(const std::string& record_filename) {
-    record_filename_ = record_filename;
-    index_filename_ = record_filename + ".index";
-    if (file::path::Exists(index_filename_)) {
-      LOG(ERROR) << "Index file:" << index_filename_ << " exists, seek functionality is enabled";
-      index_ = std::make_unique<utils::IndexReader>(index_filename_);
-    }
-  }
+  explicit ReplaySystem(const std::string& record_filepath): record_filepath_(record_filepath) {}
 
-  void Initialize();
+  void Initialize() {}
 
   void Start();
 
   interface::simulation::SimulationSystemData FetchData() override;
 
  private:
-  std::string record_filename_;
-  std::string index_filename_;
-  std::unique_ptr<utils::IndexReader> index_;
+  std::string record_filepath_;
 
   utils::Mutex mutex_{"replay"};
-
+  double played_time_ = 0.0;
   interface::simulation::SimulationSystemData simulation_frame_data_ GUARDED_BY(mutex_);
-  std::unique_ptr<file::FileInterface> simulation_log_file_;
 };
 
 };  // namespace simulation

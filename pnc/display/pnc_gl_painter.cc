@@ -124,7 +124,8 @@ GLuint PncOpenglPainter::LoadImage(const std::string& image_name) {
 
 void PncOpenglPainter::DrawRoadGraph(const interface::map::Map& road_graph,
                                      bool enable_lane_highlight,
-                                     bool draw_lane_line_realistically) {
+                                     bool draw_lane_line_realistically,
+                                     Vec3d vehicle_pos) {
   // Road
   std::vector<Vec3d> line_vertices;
   for (const auto& lane : road_graph.lane()) {
@@ -132,10 +133,15 @@ void PncOpenglPainter::DrawRoadGraph(const interface::map::Map& road_graph,
     Color center_line_color;
     float center_line_width;
     const interface::geometry::Polyline& center_line = lane.central_line();
+    int size = center_line.point_size();
+    if (size == 0) { continue; }
+    double diff = std::pow(center_line.point(size/2).x() - vehicle_pos.x, 2) +
+                  std::pow(center_line.point(size/2).y() - vehicle_pos.y, 2);
+    if (diff > 40000) { continue; }
     SetLaneCenterLineDrawStyle(enable_lane_highlight, lane, &center_line_width, &center_line_color);
     line_vertices.clear();
     for (const auto& point : center_line.point()) {
-      line_vertices.push_back(Vec3d(point.x(), point.y(), point.z() + GetGlLayer(kLayerRoadGraph)));
+      line_vertices.push_back(Vec3d(point.x(), point.y(), 0));
     }
     primitive_painter_->DrawLines(ConstArrayView<Vec3d>(line_vertices.data(), line_vertices.size()),
                                   GL_LINES, LineStyle(center_line_color, center_line_width, false));
@@ -149,7 +155,7 @@ void PncOpenglPainter::DrawRoadGraph(const interface::map::Map& road_graph,
                              &left_bound_color);
     line_vertices.clear();
     for (const auto& point : left_bound.boundary().point()) {
-      line_vertices.push_back(Vec3d(point.x(), point.y(), point.z() + GetGlLayer(kLayerRoadGraph)));
+      line_vertices.push_back(Vec3d(point.x(), point.y(), 0));
     }
     primitive_painter_->DrawStippleLines(
         ConstArrayView<Vec3d>(line_vertices.data(), line_vertices.size()), GL_LINE_STRIP,
@@ -165,7 +171,7 @@ void PncOpenglPainter::DrawRoadGraph(const interface::map::Map& road_graph,
                              &right_bound_color);
     line_vertices.clear();
     for (const auto& point : right_bound.boundary().point()) {
-      line_vertices.push_back(Vec3d(point.x(), point.y(), point.z() + GetGlLayer(kLayerRoadGraph)));
+      line_vertices.push_back(Vec3d(point.x(), point.y(), 0));
     }
     primitive_painter_->DrawStippleLines(
         ConstArrayView<Vec3d>(line_vertices.data(), line_vertices.size()), GL_LINE_STRIP,
@@ -214,8 +220,6 @@ void PncOpenglPainter::SetLaneBoundaryDrawStyle(bool enable_lane_highlight,
       *line_stipple_style = 0xffff;
       *color = Color::White();
     } else {
-      LOG(ERROR) << "Unknown lane boundary type " +
-                        interface::map::LaneBoundary_Type_Name(boundary.type());
       *line_stipple_style = 0xffff;
       *color = Color::White();
     }

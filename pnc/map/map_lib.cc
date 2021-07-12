@@ -7,10 +7,12 @@
 
 #include <iostream>
 
+DEFINE_string(map_data_path, "pnc/map/grid3/map_proto.txt", "map data path");
+
 namespace pnc {
 namespace map {
 
-MapLib::MapLib() { CHECK(file::ReadFileToProto("pnc/map/grid3/map_proto.txt", &map_data_)); }
+MapLib::MapLib() { CHECK(file::ReadFileToProto(FLAGS_map_data_path, &map_data_)); }
 
 }  // namespace map
 }  // namespace pnc

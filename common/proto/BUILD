@@ -264,6 +264,8 @@ proto_library(
         ":agent_status_proto",
         ":display_proto",
         ":perception_proto",
+        ":traffic_light_detection_proto",
+        ":vehicle_status_proto",
     ],
 )
 
@@ -339,4 +341,16 @@ proto_library(
         ":control_proto",
         ":display_proto",
     ],
+)
+
+cc_proto_library(
+    name = "cc_traffic_light_detection_proto",
+    deps = [
+        ":traffic_light_detection_proto",
+    ],
+)
+
+proto_library(
+    name = "traffic_light_detection_proto",
+    srcs = ["traffic_light_detection.proto"],
 )

@@ -48,7 +48,7 @@ class PncOpenglPainter : public OpenglPainter {
   virtual ~PncOpenglPainter() = default;
 
   void DrawRoadGraph(const interface::map::Map& road_graph, bool enable_lane_highlight,
-                     bool draw_lane_line_realistically);
+                     bool draw_lane_line_realistically, math::Vec3d vehicle_pos);
 
   GLuint LoadImage(const std::string& image_name);
 

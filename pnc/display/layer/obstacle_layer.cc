@@ -40,6 +40,9 @@ void ObstacleLayer::Draw() const {
       DrawObstacle(pedestrian, true, true, true);
     }
   }
+  for (const auto& obstacle : data_.obstacles().obstacle()) {
+    DrawObstacle(obstacle);
+  }
 }
 
 void ObstacleLayer::DrawObstacle(const PerceptionObstacle& obstacle, bool draw_id,
@@ -113,21 +116,6 @@ void ObstacleLayer::DrawObstacle(const PerceptionObstacle& obstacle, bool draw_i
   lines.SetData(utils::ConstArrayView<math::Vec3d>(line_vertices.data(), line_vertices.size()),
                 color);
   lines.Draw();
-
-  if (obstacle.has_heading()) {
-    const double arrow_length = 1.5;
-    const math::Vec3d arrow_start(math::ToVec2d(obstacle.polygon_point(0)), layer + height);
-    const math::Vec3d arrow_dir(math::Vec2d::FromLengthAndHeading(arrow_length, obstacle.heading()),
-                                0.0);
-    const math::Vec3d arrow_end = arrow_start + arrow_dir;
-
-    utils::display::OpenglPainter::ArrowStyle<math::Vec3d> arrow_style;
-    arrow_style.up_dir = math::Vec3d(0, 0, 1);
-    arrow_style.line_style.line_width = LineWidth::kArrow;
-    arrow_style.line_style.is_dash_line = false;
-    arrow_style.wing_angle = 45;
-    gl_painter_->DrawArrow(arrow_start, arrow_end, arrow_style);
-  }
 }
 
 }  // namespace display

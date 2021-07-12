@@ -12,6 +12,7 @@ int main(int argc, char* argv[]) {
   google::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
   FLAGS_logtostderr = true;
+  FLAGS_map_data_path = file::path::Join(FLAGS_simulation_log_file_path, "map.proto.bin");
 
   QApplication app(argc, argv);
   QCoreApplication::setOrganizationName("pony.ai");

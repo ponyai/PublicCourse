@@ -54,6 +54,7 @@ message PerceptionObstacles {
 
   // Processed Velodyne data time.
   optional double timestamp = 3;
+  optional double master_lidar_measurement_timestamp = 6;
 }
 
 

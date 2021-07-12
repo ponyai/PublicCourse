@@ -49,8 +49,6 @@ void PncPainterWidget::Initialize() {
       std::make_unique<utils::display::RoadGraphLayer>(
           kLayerRoadGraph, map_lib_.get(), simulation_system_data_, user_interface_data_),
       kObjectLayerLevel);
-  layer_manager_->AddLayer(std::make_unique<utils::display::IntensityMapLayer>(kLayerIntensityMap),
-                           kBackgroundLayerLevel);
   layer_manager_->AddLayer(
       std::make_unique<utils::display::VehicleLayer>(kLayerVehicle, simulation_system_data_,
                                                      user_interface_data_, vehicle_params_),
@@ -82,6 +80,12 @@ void PncPainterWidget::SetupCamera() {
         break;
       }
     }
+    utils::vehicle::VehicleStatusHelper vehicle_status_helper(
+        simulation_system_data_.vehicle_localization());
+    yaw = math::transform::GetYaw(vehicle_status_helper.orientation());
+    pos_x = vehicle_status_helper.position().x();
+    pos_y = vehicle_status_helper.position().y();
+
     double azimuth_angle =
         static_cast<PncPainterWidgetController*>(painter_widget_controller_.get())
             ->delta_azimuth_angle() +
